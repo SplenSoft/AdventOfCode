@@ -9,6 +9,8 @@ namespace AdventOfCode2024
     internal abstract class Day
     {
         public abstract int DayNumber { get; }
+        public abstract string Synopsis { get; }
+        public abstract string SampleInput { get; }
         public abstract string Solve(string input);
     }
 }

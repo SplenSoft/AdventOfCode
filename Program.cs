@@ -39,12 +39,14 @@ while (dayNumber == null)
 
     Console.WriteLine("Invalid integer detected");
 }
-string? input = null;
 
-while (input == null)
-{
-    Console.WriteLine($"Please paste your puzzle input and press enter:");
-    input = Console.ReadLine();
-}
+//string? input = null;
 
-Console.WriteLine(days[(int)dayNumber].Solve(input));
+//while (input == null)
+//{
+//    Console.WriteLine($"Please paste your puzzle input and press enter:");
+//    input = Console.ReadLine();
+//}
+
+Day day = days[(int)dayNumber];
+Console.WriteLine(day.Solve(day.SampleInput));
