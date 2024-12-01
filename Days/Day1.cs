@@ -91,8 +91,6 @@ Once again consider your left and right lists. What is their similarity score?";
         /// </param>
         public override string Solve(string input)
         {
-            // Part 1
-
             var regex = new Regex(@"(\d{5})\s{3}(\d{5})(?:\n|\r\n|$)");
             List<List<int>> lists = [[], []];
 
@@ -101,33 +99,25 @@ Once again consider your left and right lists. What is their similarity score?";
                     lists[i].Add(int.Parse(match.Groups[i + 1].Value));
 
             for (int i = 0; i < lists.Count; i++)
-                lists[i] = [.. lists[i].OrderBy(x => x)];
+                lists[i] = [.. lists[i].Order()];
 
-            int sum = 0;
+            int part1 = 0;
+            int part2 = 0;
 
-            for (int i = 0; i < lists[0].Count; i++)
-                sum += Math.Abs(lists[0][i] - lists[1][i]);
-
-            StringBuilder sb = new();
-            sb.AppendLine($"Part 1 solution: {sum}");
-
-            // Part 2
-
-            int score = 0;
             for (int i = 0; i < lists[0].Count; i++)
             {
-                int appearances = 0;
                 int item1 = lists[0][i];
+                part1 += Math.Abs(item1 - lists[1][i]);
+                int appearances = 0;
 
                 for (int j = 0; j < lists[1].Count; j++)
                     if (item1 == lists[1][j])
                         appearances++;
 
-                score += item1 * appearances;
+                part2 += item1 * appearances;
             }
-
-            sb.AppendLine($"Part 2 solution: {score}");
-            return sb.ToString();
+                
+            return $"Part 1 solution: {part1}\nPart 2 solution: {part2}";
         }
     }
 }
