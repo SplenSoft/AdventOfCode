@@ -8,13 +8,15 @@ namespace AdventOfCode._2024;
 
 internal class Day2 : Day
 {
-    public override int Year { get; } = 2024;
+    #region Properties
+    public override int Year => 2024;
 
-    public override int DayNumber { get; } = 2;
+    public override int DayNumber => 2;
 
-    public override string Synopsis => throw new NotImplementedException();
+    public override string Synopsis => @"";
 
-    public override string SampleInput { get; } = "";
+    public override string SampleInput => "";
+    #endregion
 
     public override string Solve(string input)
     {
