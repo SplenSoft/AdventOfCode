@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode._2024;
 
@@ -81,22 +74,16 @@ Update your analysis by handling situations where the Problem Dampener can remov
 
         bool isReportGood(List<int> report)
         {
-            int direction = 0;
+            int direction = report[0] < report[1] ? 1 : -1;
 
             for (int i = 0; i < report.Count - 1; i++)
-            {
-                int diff = Math.Abs(report[i + 1] - report[i]);
-
-                if (direction == 0)
-                    direction = report[i] < report[i + 1] ? 1 : -1;
-
                 if ((direction == 1 && report[i] > report[i + 1])
                     || (direction == -1 && report[i] < report[i + 1]) 
-                    || diff == 0 || diff > 3)
+                    || report[i] == report[i + 1] 
+                    || Math.Abs(report[i + 1] - report[i]) > 3)
                 {
                     return false;
                 }
-            }
 
             return true;
         }
@@ -116,11 +103,7 @@ Update your analysis by handling situations where the Problem Dampener can remov
                 subReports.Add(subReport);
             }
 
-            foreach (var subReport in subReports)
-                if (isReportGood(subReport))
-                    return true;
-
-            return false;
+            return subReports.Any(isReportGood);
         }
 
         int part1 = reports.Where(isReportGood).Count();
