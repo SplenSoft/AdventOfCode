@@ -66,48 +66,31 @@ Update your analysis by handling situations where the Problem Dampener can remov
 
     public override string Solve(string input)
     {
-        Regex regex = new Regex(@"((\d+?)(?:\s|$))+?");
-        List<string> lines = [.. input.Split("\r\n")];
-        List<List<int>> reports = lines
-            .ConvertAll(x => regex.Matches(x).ToList()
-            .ConvertAll(x => int.Parse(x.Groups[2].Value)));
+        IEnumerable<IEnumerable<int>> reports = input.Split("\r\n")
+            .Select(x => x.Split(" ")
+            .Select(x => int.Parse(x)));
 
-        bool isReportGood(List<int> report)
+        bool isReportGood(IEnumerable<int> report)
         {
-            int direction = report[0] < report[1] ? 1 : -1;
-
-            for (int i = 0; i < report.Count - 1; i++)
-                if ((direction == 1 && report[i] > report[i + 1])
-                    || (direction == -1 && report[i] < report[i + 1]) 
-                    || report[i] == report[i + 1] 
-                    || Math.Abs(report[i + 1] - report[i]) > 3)
-                {
-                    return false;
-                }
-
-            return true;
+            var translated = report.Zip(report.Skip(1), (x, y) => y - x);
+            return translated.All(x => x is < 0 and > -4)
+                || translated.All(x => x is > 0 and < 4);
         }
 
-        bool isAnySubReportGood(List<int> report)
+        bool isAnySubReportGood(IEnumerable<int> report)
         {
-            List<List<int>> subReports = [];
+            IEnumerable<IEnumerable<int>> subReports = [];
 
-            for (int i = 0; i < report.Count; i++)
-            {
-                List<int> subReport = [];
-
-                for (int j = 0; j < report.Count; j++)
-                    if (i != j)
-                        subReport.Add(report[j]);
-
-                subReports.Add(subReport);
-            }
+            for (int i = 0; i < report.Count(); i++)
+                subReports = subReports.Append(
+                    report.Take(i).Concat(
+                    report.TakeLast(report.Count() - (i + 1))));
 
             return subReports.Any(isReportGood);
         }
 
-        int part1 = reports.Where(isReportGood).Count();
-        int part2 = reports.Where(isAnySubReportGood).Count();
+        int part1 = reports.Count(isReportGood);
+        int part2 = reports.Count(isAnySubReportGood);
 
         return $"Part 1 solution: {part1}\nPart 2 solution: {part2}";
     }
