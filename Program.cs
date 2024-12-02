@@ -43,8 +43,8 @@ GetYear:
 
         string? yearNumberInput = Console.ReadLine();
 
-        if (int.TryParse(yearNumberInput, out int validInt) && validInt > 0
-            && validInt <= days.Count)
+        if (int.TryParse(yearNumberInput, out int validInt) 
+            && validInt >= oldestYear && validInt <= newestYear)
         {
             year = validInt;
             break;
@@ -77,6 +77,6 @@ while (dayNumber == null)
     Console.WriteLine("Invalid integer detected");
 }
 
-Console.WriteLine($"Solving Advent of Code year {year}, day {dayNumber}");
+Console.WriteLine($"Solving Advent of Code year {year}, day {dayNumber + 1}");
 Day day = days[(int)year][(int)dayNumber];
 Console.WriteLine(day.Solve(day.SampleInput));
