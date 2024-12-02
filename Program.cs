@@ -9,13 +9,16 @@ var assembly = Assembly.GetExecutingAssembly()
 
 foreach (var type in assembly.GetTypes())
 {
-    Debug.WriteLine($"AdventofCode Day initialized: {type.Name}");
-
     if (!type.IsSubclassOf(typeof(Day)))
         continue;
 
+    Debug.WriteLine($"AdventofCode Day initialized: {type.Name}");
+
     Day instance = (Day?)Activator.CreateInstance(type)
         ?? throw new Exception("Instance was null");
+
+    Debug.WriteLine(
+        $"Adding day {instance.DayNumber} to year {instance.Year}");
 
     if (!days.TryGetValue(instance.Year, out List<Day>? value))
     {
@@ -63,12 +66,12 @@ if (!days.ContainsKey((int)year))
 while (dayNumber == null)
 {
     Console.WriteLine(
-        $"Please enter a day number between 1 and {days.Count}:");
+        $"Please enter a day number between 1 and {days[(int)year].Count}:");
 
     string? dayNumberInput = Console.ReadLine();
 
     if (int.TryParse(dayNumberInput, out int validInt) && validInt > 0 
-        && validInt <= days.Count)
+        && validInt <= days[(int)year].Count)
     {
         dayNumber = validInt - 1;
         break;
