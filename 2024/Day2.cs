@@ -81,10 +81,8 @@ Update your analysis by handling situations where the Problem Dampener can remov
         {
             IEnumerable<IEnumerable<int>> subReports = [];
 
-            for (int i = 0; i < report.Count(); i++)
-                subReports = subReports.Append(
-                    report.Take(i).Concat(
-                    report.TakeLast(report.Count() - (i + 1))));
+            subReports = reports.Select((x, i) => x.Take(i)
+                .Concat(x.TakeLast(report.Count() - (i + 1))));
 
             return subReports.Any(isReportGood);
         }
