@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Collections.ObjectModel;
 
 namespace AdventOfCode._2024;
 
+/// <summary>
+/// <see href="https://adventofcode.com/2024/day/5"/>
+/// </summary>
 internal class Day5 : Day
 {
     public override int Year => 2024;
@@ -17,7 +14,7 @@ internal class Day5 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_5_Input;
-    //50
+
     public override string Solve(string input)
     {
         int[] total = new int[2];
@@ -27,7 +24,8 @@ internal class Day5 : Day
         foreach (var x in r.Select(x => x[0]).Distinct())
             rules[x] = [.. r.Where(y => y[0] == x).Select(y => y[1])];
 
-        foreach (var arr in n.Where(x => x.Contains(',')).Select(x => x.Split(','))) 
+        foreach (var arr in n.Where(x => x.Contains(','))
+            .Select(x => x.Split(','))) 
         {
             int k = 0;
             Top:
@@ -37,9 +35,9 @@ internal class Day5 : Day
                         if (rules[arr[i]].Contains(arr[j]))
                         {
                             k = 1;
-                            arr.Take(i - 1).Append(arr[i]).Append(arr[i - 1])
-                                .Concat(arr.Skip(i + 1)).ToList()
-                                .CopyTo(0, arr, 0, arr.Length);
+                            ObservableCollection<string> col = new(arr);
+                            col.Move(i, i - 1);
+                            col.CopyTo(arr, 0);
                             goto Top;
                         }
 
