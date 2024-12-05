@@ -30,9 +30,7 @@ internal class Day1 : Day
             floor += ch == '(' ? 1 : -1;
 
             if (basementPos == null && floor == -1)
-            {
                 basementPos = i + 1;
-            }
         }
 
         return $"Part 1 solution: {floor}\nPart 2 solution: {basementPos}";

@@ -18,83 +18,41 @@ internal class Day3 : Day
     public override string Synopsis => @"";
 
     public override string Input => Resources._2015_3_Input; 
-
+    //62
     public override string Solve(string input)
     {
-        var houses = new Dictionary<int, Dictionary<int, int>>();
-        (int, int) posSanta = (0, 0);
-        (int, int) posRoboSanta = (0, 0);
-        int totalHitHouses = 0;
-
-        void AddPresent((int, int) santaPos)
+        Dictionary<int, List<int>> houses;
+        (int, int)[] santas = new (int, int)[2];
+        string result = "";
+        Dictionary<char, (int, int)> moves = new()
         {
-            int x = santaPos.Item1;
-            int y = santaPos.Item2;
+            { '^', (0, 1) }, { 'v', (0, -1) }, 
+            { '<', (-1, 0) }, { '>', (1, 0) }
+        };
 
-            if (!houses.TryGetValue(x, out Dictionary<int, int>? value))
-            {
-                value = ([]);
-                houses[x] = value;
-            }
-
-            if (!value.ContainsKey(y)) 
-            {
-                value[y] = 0;
-                totalHitHouses++;
-            }
-
-            houses[x][y] += 1;
-        }
-
-        void Move(ref (int, int) santaPos, char ch)
+        void Move(ref (int, int) pos, char ch)
         {
-            switch (ch)
-            {
-                case '^':
-                    santaPos.Item2 += 1;
-                    break;
-                case 'v':
-                    santaPos.Item2 -= 1;
-                    break;
-                case '<':
-                    santaPos.Item1 -= 1;
-                    break;
-                case '>':
-                    santaPos.Item1 += 1;
-                    break;
-            }
-
-            AddPresent(santaPos);
+            pos.Item1 += moves[ch].Item1;
+            pos.Item2 += moves[ch].Item2;
+            if (!houses.ContainsKey(pos.Item1)) houses[pos.Item1] = [];
+            houses[pos.Item1].Add(pos.Item2);
         }
-
-        AddPresent(posSanta);
-        AddPresent(posRoboSanta);
-
-        var sb = new StringBuilder();
 
         for (int j = 0; j < 2; j++)
         {
-            totalHitHouses = 0;
-            posSanta = (0, 0);
-            posRoboSanta = (0, 0);
+            santas = new (int, int)[2];
             houses = [];
 
             for (int i = 0; i < input.Length; i++)
-            {
-                char ch = input[i];
-                if (i % 2 == 0 || j == 0) // Normal Santa
-                {
-                    Move(ref posSanta, ch);
-                }
-                else
-                {
-                    Move(ref posRoboSanta, ch);
-                }
-            }
+                if (i % 2 != 0 || j == 1) Move(ref santas[0], input[i]);
+                else Move(ref santas[1], input[i]);
 
-            sb.AppendLine($"Part {j + 1} solution: {totalHitHouses}");
+            int res = houses
+                .SelectMany(x => houses[x.Key].Distinct()).Count() + j;
+
+            result = $"Part {(j == 0 ? 2 : 1)} solution: {res}\n" + result;
         }
-        
-        return sb.ToString();
+
+        return result;
     }
 }
