@@ -59,52 +59,76 @@ namespace AdventOfCode {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        /// </summary>
         internal static string _2015_1_Input {
             get {
                 return ResourceManager.GetString("2015.1.Input", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        /// </summary>
         internal static string _2015_2_Input {
             get {
                 return ResourceManager.GetString("2015.2.Input", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        /// </summary>
         internal static string _2015_3_Input {
             get {
                 return ResourceManager.GetString("2015.3.Input", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        /// </summary>
         internal static string _2024_1_Input {
             get {
                 return ResourceManager.GetString("2024.1.Input", resourceCulture);
             }
         }
         
+        /// <summary>
+        /// </summary>
         internal static string _2024_2_Input {
             get {
                 return ResourceManager.GetString("2024.2.Input", resourceCulture);
             }
         }
         
+        /// <summary>
+        /// </summary>
         internal static string _2024_3_Input {
             get {
                 return ResourceManager.GetString("2024.3.Input", resourceCulture);
             }
         }
         
+        /// <summary>
+        /// </summary>
         internal static string _2024_4_Input {
             get {
                 return ResourceManager.GetString("2024.4.Input", resourceCulture);
             }
         }
         
+        /// <summary>
+        /// </summary>
         internal static string _2024_4_Synopsis {
             get {
                 return ResourceManager.GetString("2024.4.Synopsis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// </summary>
+        internal static string _2024_5_Input {
+            get {
+                return ResourceManager.GetString("2024.5.Input", resourceCulture);
             }
         }
     }
