@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode._2015;
 
@@ -26,8 +21,8 @@ internal class Day2 : Day
         List<(int, int, int)> list = [];
 
         foreach (Match match in regex.Matches(input))
-            list.Add((int.Parse(match.Groups[1].Value), 
-                int.Parse(match.Groups[2].Value), 
+            list.Add((int.Parse(match.Groups[1].Value),
+                int.Parse(match.Groups[2].Value),
                 int.Parse(match.Groups[3].Value)));
 
         int paper = 0;
@@ -45,10 +40,10 @@ internal class Day2 : Day
 
             int surfaceArea = (dim1 * 2) + (dim2 * 2) + (dim3 * 2);
 
-            int smallestDim = dim1 <= dim2 && dim1 <= dim3 ? dim1 
+            int smallestDim = dim1 <= dim2 && dim1 <= dim3 ? dim1
                 : dim2 <= dim1 && dim2 <= dim3 ? dim2 : dim3;
 
-            int ribbon1 = perim1 <= perim2 && perim1 <= perim3 ? perim1 
+            int ribbon1 = perim1 <= perim2 && perim1 <= perim3 ? perim1
                 : perim2 <= perim1 && perim2 <= perim3 ? perim2 : perim3;
 
             int volume = present.Item1 * present.Item2 * present.Item3;

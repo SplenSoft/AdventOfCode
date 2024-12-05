@@ -25,7 +25,7 @@ internal class Day5 : Day
             rules[x] = [.. r.Where(y => y[0] == x).Select(y => y[1])];
 
         foreach (var arr in n.Where(x => x.Contains(','))
-            .Select(x => x.Split(','))) 
+            .Select(x => x.Split(',')))
         {
             int k = 0;
             Top:

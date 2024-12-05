@@ -13,7 +13,7 @@ internal class Day3 : Day
 
     public override string Synopsis => @"";
 
-    public override string Input => Resources._2024_3_Input; 
+    public override string Input => Resources._2024_3_Input;
 
     public override string Solve(string input)
     {

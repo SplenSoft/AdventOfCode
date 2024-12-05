@@ -40,7 +40,7 @@ internal class Day4 : Day
                     && lines[y + 1][x + 1] == 'A'
                     && Valid($"{lines[y][x]}{lines[y + 2][x + 2]}")
                     && Valid($"{lines[y][x + 2]}{lines[y + 2][x]}"))
-                        total[1]++;
+                    total[1]++;
 
                 // Construct diagonals
                 if (y == 0 || x == 0 || x == lines[y].Length - 1)

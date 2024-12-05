@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode._2024;
 
@@ -50,7 +45,7 @@ internal class Day1 : Day
 
             part2 += item1 * appearances;
         }
-            
+
         return $"Part 1 solution: {part1}\nPart 2 solution: {part2}";
     }
 }

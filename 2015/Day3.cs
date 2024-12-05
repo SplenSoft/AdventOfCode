@@ -13,7 +13,7 @@ internal class Day3 : Day
 
     public override string Synopsis => @"";
 
-    public override string Input => Resources._2015_3_Input; 
+    public override string Input => Resources._2015_3_Input;
 
     public override string Solve(string input)
     {
@@ -37,7 +37,7 @@ internal class Day3 : Day
             houses = [];
 
             for (int i = 0; i < input.Length; i++)
-                 Move(ref santas[j == 1 ? 0 : i % 2], input[i]);
+                Move(ref santas[j == 1 ? 0 : i % 2], input[i]);
 
             int t = houses.SelectMany(x => houses[x.Key].Distinct()).Count();
             result = $"Part {(j == 0 ? 2 : 1)} solution: {t + j}\n" + result;

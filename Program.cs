@@ -38,22 +38,22 @@ int oldestYear = orderedYears.First();
 int newestYear = orderedYears.Last();
 
 GetYear:
-    while (year == null)
+while (year == null)
+{
+    Console.WriteLine(
+        $"Please enter a year between {oldestYear} and {newestYear}:");
+
+    string? yearNumberInput = Console.ReadLine();
+
+    if (int.TryParse(yearNumberInput, out int validInt)
+        && validInt >= oldestYear && validInt <= newestYear)
     {
-        Console.WriteLine(
-            $"Please enter a year between {oldestYear} and {newestYear}:");
-
-        string? yearNumberInput = Console.ReadLine();
-
-        if (int.TryParse(yearNumberInput, out int validInt) 
-            && validInt >= oldestYear && validInt <= newestYear)
-        {
-            year = validInt;
-            break;
-        }
-
-        Console.WriteLine("Invalid integer detected");
+        year = validInt;
+        break;
     }
+
+    Console.WriteLine("Invalid integer detected");
+}
 
 if (!days.ContainsKey((int)year))
 {
@@ -69,7 +69,7 @@ while (dayNumber == null)
 
     string? dayNumberInput = Console.ReadLine();
 
-    if (int.TryParse(dayNumberInput, out int validInt) && validInt > 0 
+    if (int.TryParse(dayNumberInput, out int validInt) && validInt > 0
         && validInt <= days[(int)year].Count)
     {
         dayNumber = validInt - 1;
