@@ -33,8 +33,7 @@ internal class Day4 : Day
         for (int y = 0; y < lines.Length; y++)
             for (int x = 0; x < lines[y].Length; x++)
             {
-                // Construct verticals
-                lists[0][x] += lines[y][x];
+                lists[0][x] += lines[y][x]; // Construct verticals
 
                 // Handle X-Mas by validating 3x3 sections (solve part 2)
                 if (y + 2 < lines.Length && x + 2 < lines[y].Length

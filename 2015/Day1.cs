@@ -26,8 +26,7 @@ internal class Day1 : Day
 
         for (int i = 0; i < input.Length; i++)
         {
-            char ch = input[i];
-            floor += ch == '(' ? 1 : -1;
+            floor += input[i] == '(' ? 1 : -1;
 
             if (basementPos == null && floor == -1)
                 basementPos = i + 1;
