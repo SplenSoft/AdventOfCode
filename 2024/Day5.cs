@@ -17,7 +17,7 @@ internal class Day5 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_5_Input;
-    //55
+    //50
     public override string Solve(string input)
     {
         int[] total = new int[2];
@@ -37,11 +37,9 @@ internal class Day5 : Day
                         if (rules[arr[i]].Contains(arr[j]))
                         {
                             k = 1;
-                            var val = arr[i];
-                            var list = arr.ToList();
-                            list.RemoveAt(i);
-                            list.Insert(i - 1, val);
-                            list.CopyTo(0, arr, 0, list.Count);
+                            arr.Take(i - 1).Append(arr[i]).Append(arr[i - 1])
+                                .Concat(arr.Skip(i + 1)).ToList()
+                                .CopyTo(0, arr, 0, arr.Length);
                             goto Top;
                         }
 
