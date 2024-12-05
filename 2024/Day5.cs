@@ -17,46 +17,42 @@ internal class Day5 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_5_Input;
-    //63
+    //59
     public override string Solve(string input)
     {
-        string[] lines = input.Split(Environment.NewLine);
-        var ruleStrings = lines.Where(x => x.Contains('|'))
-            .Select(x => x.Split('|').Select(int.Parse).ToArray());
-        var updateStrings = lines.Where(x => x.Contains(','))
-            .Select(x => x.Split(',').Select(int.Parse).ToArray());
-        Dictionary<int, List<int>> rules = [];
+        string[] n = input.Split(Environment.NewLine);
+        var rules1 = n.Where(x => x.Contains('|')).Select(x => x.Split('|'));
+        var ups1 = n.Where(x => x.Contains(',')).Select(x => x.Split(','));
+        Dictionary<string, List<string>> rules = [];
         int[] total = new int[2];
         int badIndex;
 
-        foreach (var nums in ruleStrings)
+        foreach (var nums in rules1)
         {
             if (!rules.ContainsKey(nums[0])) rules[nums[0]] = [];
             rules[nums[0]].Add(nums[1]);
         }
 
-        foreach (var arr in updateStrings) 
+        foreach (var arr in ups1) 
         {
             int k = 0;
             do
             {
                 badIndex = -1;
                 for (int i = 1; i < arr.Length; i++)
-                    if (badIndex < 0 && rules.TryGetValue(arr[i], out var val))
+                    if (badIndex < 0 && rules.ContainsKey(arr[i]))
                         for (int j = 0; j < i; j++)
-                            if (val.Contains(arr[j]))
+                            if (rules[arr[i]].Contains(arr[j]))
                                 badIndex = i;
-                if (badIndex != -1)
-                {
-                    k = 1;
-                    int val = arr[badIndex];
-                    var list = arr.ToList();
-                    list.RemoveAt(badIndex);
-                    list.Insert(badIndex - 1, val);
-                    list.CopyTo(0, arr, 0, list.Count);
-                }
+                if (badIndex == -1) break;
+                k = 1;
+                var val = arr[badIndex];
+                var list = arr.ToList();
+                list.RemoveAt(badIndex);
+                list.Insert(badIndex - 1, val);
+                list.CopyTo(0, arr, 0, list.Count);
             } while (badIndex > -1);
-            total[k] += arr[arr.Length / 2];
+            total[k] += int.Parse(arr[arr.Length / 2]);
         }
 
         return $"Part 1 solution: {total[0]}\nPart 2 solution: {total[1]}";
