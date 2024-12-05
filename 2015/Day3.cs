@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace AdventOfCode._2015;
 
@@ -18,39 +14,34 @@ internal class Day3 : Day
     public override string Synopsis => @"";
 
     public override string Input => Resources._2015_3_Input; 
-    //62
+    //53
     public override string Solve(string input)
     {
-        Dictionary<int, List<int>> houses;
-        (int, int)[] santas = new (int, int)[2];
+        Dictionary<float, List<float>> houses;
+        Vector2[] santas = new Vector2[2];
         string result = "";
-        Dictionary<char, (int, int)> moves = new()
-        {
-            { '^', (0, 1) }, { 'v', (0, -1) }, 
-            { '<', (-1, 0) }, { '>', (1, 0) }
-        };
+        Dictionary<char, Vector2> moves = new()
+            {{'^', new (0, 1)}, {'v', new (0, -1)},
+            {'<', new (-1, 0)}, {'>', new (1, 0)}};
 
-        void Move(ref (int, int) pos, char ch)
+        void Move(ref Vector2 pos, char ch)
         {
-            pos.Item1 += moves[ch].Item1;
-            pos.Item2 += moves[ch].Item2;
-            if (!houses.ContainsKey(pos.Item1)) houses[pos.Item1] = [];
-            houses[pos.Item1].Add(pos.Item2);
+            pos += moves[ch];
+            if (!houses.ContainsKey(pos.X)) houses[pos.X] = [];
+            houses[pos.X].Add(pos.Y);
         }
 
         for (int j = 0; j < 2; j++)
         {
-            santas = new (int, int)[2];
+            santas = new Vector2[2];
             houses = [];
 
             for (int i = 0; i < input.Length; i++)
                 if (i % 2 != 0 || j == 1) Move(ref santas[0], input[i]);
                 else Move(ref santas[1], input[i]);
 
-            int res = houses
-                .SelectMany(x => houses[x.Key].Distinct()).Count() + j;
-
-            result = $"Part {(j == 0 ? 2 : 1)} solution: {res}\n" + result;
+            int t = houses.SelectMany(x => houses[x.Key].Distinct()).Count();
+            result = $"Part {(j == 0 ? 2 : 1)} solution: {t + j}\n" + result;
         }
 
         return result;
