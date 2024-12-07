@@ -16,31 +16,20 @@ internal class Day6 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_6_Input;
-
+    //77
     public override string Solve(string input)
     {
         StringBuilder result = new("Part 1 solution: ");
-        List<Vector2> successPath = [];
-        List<Vector2> attemptedObstacles = [];
-        int loops = 0;
+        List<List<Vector2>> vecs = [[], [], []];
         Dictionary<char, Vector2> dirs = new()
-            {{'^', new (0, -1)}, {'>', new (1, 0)}, {'v', new (0, 1)},
-            {'<', new (-1, 0)}};
+            {{'^', new (0, -1)}, {'>', new (1, 0)},
+            {'v', new (0, 1)}, {'<', new (-1, 0)}};
         Start:
         List<Vector2> path = [];
         string[] lines = input.Split(Environment.NewLine);
         Vector2 pos = Vector2.Zero;
         char dir = '^';
         
-        void AddObstacle(Vector2 obs)
-        {
-            attemptedObstacles.Add(obs);
-            int y = (int)obs.Y;
-            if (lines[y][(int)obs.X] == '^') return;
-            var e = lines[y][^(lines[y].Length - (int)obs.X - 1)..];
-            lines[y] = lines[y][..(int)obs.X] + '#' + e;
-        }
-
         bool Patrol()
         {
             int i = 0;
@@ -62,25 +51,28 @@ internal class Day6 : Day
             goto Patrol;
         }
 
-        for (int y = 0; y < lines.Length; y++)
-            for (int x = 0; x < lines[y].Length; x++)
-                if (lines[y][x] == dir) pos = new Vector2(x, y);
+        for (int y1 = 0; y1 < lines.Length; y1++)
+            for (int x = 0; x < lines[y1].Length; x++)
+                if (lines[y1][x] == dir) pos = new Vector2(x, y1);
 
-        if (successPath.Count == 0)
+        if (vecs[0].Count == 0 && Patrol())
         {
-            Patrol();
-            successPath = path;
+            vecs[0] = path;
             result.Append(path.Distinct().Count());
             goto Start;
         }
 
-        if (attemptedObstacles.Count == successPath.Count)
-            return result.ToString() + $"\nPart 2 solution: {loops}";
+        if (vecs[1].Count == vecs[0].Count)
+            return result.ToString() + $"\nPart 2 solution: {vecs[2].Count}";
 
-        var obs = successPath[attemptedObstacles.Count];
-        bool exists = attemptedObstacles.Contains(obs);
-        AddObstacle(obs);
-        if (!exists && !Patrol()) loops++;
+        var obs = vecs[0][vecs[1].Count];
+        bool exists = vecs[1].Contains(obs);
+        vecs[1].Add(obs);
+        int y = (int)obs.Y;
+        if (lines[y][(int)obs.X] == '^') goto Start;
+        var e = lines[y][^(lines[y].Length - (int)obs.X - 1)..];
+        lines[y] = lines[y][..(int)obs.X] + '#' + e;
+        if (!exists && !Patrol()) vecs[2].Add(Vector2.Zero);
         goto Start;
     }
 }
