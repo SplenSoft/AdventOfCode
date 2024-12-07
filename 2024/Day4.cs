@@ -22,7 +22,7 @@ internal class Day4 : Day
     /// <para />
     /// Part 2: Handle X-Mas by validating 3x3 sections of the input grid
     /// </summary>
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         int Count(string s, string v) => new Regex(v).Matches(s).Count;
         bool Valid(string s) => s is "SM" or "MS";

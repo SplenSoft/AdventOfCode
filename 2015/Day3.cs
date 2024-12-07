@@ -15,7 +15,7 @@ internal class Day3 : Day
 
     public override string Input => Resources._2015_3_Input;
 
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         Dictionary<float, List<float>> houses;
         Vector2[] santas = new Vector2[2];

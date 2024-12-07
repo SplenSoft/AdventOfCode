@@ -19,7 +19,7 @@ internal class Day1 : Day
     /// A string consisting of multiple lines of two side-by-side 
     /// numbers, separated by three spaces
     /// </param>
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         var regex = new Regex(@"(\d{5})\s{3}(\d{5})(?:\n|\r\n|$)");
         List<List<int>> lists = [[], []];

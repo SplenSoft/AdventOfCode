@@ -17,7 +17,7 @@ internal class Day6 : Day
 
     public override string Input => Resources._2024_6_Input;
 
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         StringBuilder result = new("Part 1 solution: ");
         List<List<Vector2>> vecs = [[/*path*/], [/*obstacles*/], [/*count*/]]; 

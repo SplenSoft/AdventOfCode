@@ -15,7 +15,7 @@ internal class Day5 : Day
 
     public override string Input => Resources._2024_5_Input;
 
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         int[] total = new int[2];
         string[] n = input.Split(Environment.NewLine);

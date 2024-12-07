@@ -15,7 +15,7 @@ internal class Day2 : Day
 
     public override string Input => Resources._2015_2_Input;
 
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         var regex = new Regex(@"(\d+?)x(\d+?)x(\d+?)(?:\n|\r\n|$)");
         List<(int, int, int)> list = [];

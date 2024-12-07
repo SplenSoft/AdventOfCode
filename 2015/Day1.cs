@@ -13,7 +13,7 @@ internal class Day1 : Day
 
     public override string Input => Resources._2015_1_Input;
 
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         int floor = 0;
         int? basementPos = null;

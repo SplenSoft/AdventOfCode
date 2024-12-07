@@ -81,4 +81,4 @@ while (dayNumber == null)
 
 Console.WriteLine($"Solving Advent of Code year {year}, day {dayNumber + 1}");
 Day day = days[(int)year][(int)dayNumber];
-Console.WriteLine(day.Solve(day.Input));
+Console.WriteLine(await day.Solve(day.Input));

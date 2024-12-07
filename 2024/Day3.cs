@@ -15,7 +15,7 @@ internal class Day3 : Day
 
     public override string Input => Resources._2024_3_Input;
 
-    public override string Solve(string input)
+    public override async Task<string> Solve(string input)
     {
         var regex = new Regex(@"mul\((\d{1,3}),(\d{1,3})\)");
 
