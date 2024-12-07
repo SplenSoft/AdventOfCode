@@ -16,11 +16,11 @@ internal class Day6 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_6_Input;
-    //77
+
     public override string Solve(string input)
     {
         StringBuilder result = new("Part 1 solution: ");
-        List<List<Vector2>> vecs = [[], [], []];
+        List<List<Vector2>> vecs = [[/*path*/], [/*obstacles*/], [/*count*/]]; 
         Dictionary<char, Vector2> dirs = new()
             {{'^', new (0, -1)}, {'>', new (1, 0)},
             {'v', new (0, 1)}, {'<', new (-1, 0)}};
@@ -51,21 +51,21 @@ internal class Day6 : Day
             goto Patrol;
         }
 
-        for (int y1 = 0; y1 < lines.Length; y1++)
+        for (int y1 = 0; y1 < lines.Length; y1++) // Find start pos
             for (int x = 0; x < lines[y1].Length; x++)
                 if (lines[y1][x] == dir) pos = new Vector2(x, y1);
 
-        if (vecs[0].Count == 0 && Patrol())
+        if (vecs[0].Count == 0 && Patrol()) // Solve part 1
         {
             vecs[0] = path;
             result.Append(path.Distinct().Count());
             goto Start;
         }
 
-        if (vecs[1].Count == vecs[0].Count)
+        if (vecs[1].Count == vecs[0].Count) // We've tried all obstacles
             return result.ToString() + $"\nPart 2 solution: {vecs[2].Count}";
 
-        var obs = vecs[0][vecs[1].Count];
+        var obs = vecs[0][vecs[1].Count]; // Part 2, adding obstacles
         bool exists = vecs[1].Contains(obs);
         vecs[1].Add(obs);
         int y = (int)obs.Y;
