@@ -136,5 +136,10 @@ namespace AdventOfCode {
                 return ResourceManager.GetString("2024.5.Test.Input", resourceCulture);
             }
         }
+        internal static string _2024_6_Input {
+            get {
+                return ResourceManager.GetString("2024.6.Input", resourceCulture);
+            }
+        }
     }
 }
