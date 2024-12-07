@@ -70,8 +70,8 @@ internal class Day6 : Day
         vecs[1].Add(obs);
         int y = (int)obs.Y;
         if (lines[y][(int)obs.X] == '^') goto Start;
-        var e = lines[y][^(lines[y].Length - (int)obs.X - 1)..];
-        lines[y] = lines[y][..(int)obs.X] + '#' + e;
+        lines[y] = lines[y][..(int)obs.X] + '#' 
+            + lines[y][^(lines[y].Length - (int)obs.X - 1)..];
         if (!exists && !Patrol()) vecs[2].Add(Vector2.Zero);
         goto Start;
     }
