@@ -151,4 +151,10 @@
   <data name="2024.6.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\2024.6.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="2024.7.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\2024.7.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="2024.7.Test.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\2024.7.Test.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>
