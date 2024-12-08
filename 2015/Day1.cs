@@ -3,14 +3,9 @@
 /// <summary>
 /// <see href="https://adventofcode.com/2015/day/1"/>
 /// </summary>
+[Day(2015, 1)]
 internal class Day1 : Day
 {
-    public override int Year => 2015;
-
-    public override int DayNumber => 1;
-
-    public override string Synopsis => @"";
-
     public override string Input => Resources._2015_1_Input;
 
     public override async Task<string> Solve(string input)

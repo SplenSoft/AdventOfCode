@@ -5,14 +5,9 @@ namespace AdventOfCode._2024;
 /// <summary>
 /// <see href="https://adventofcode.com/2024/day/5"/>
 /// </summary>
+[Day(2024, 5)]
 internal class Day5 : Day
 {
-    public override int Year => 2024;
-
-    public override int DayNumber => 5;
-
-    public override string Synopsis => throw new NotImplementedException();
-
     public override string Input => Resources._2024_5_Input;
 
     public override async Task<string> Solve(string input)

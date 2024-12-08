@@ -5,14 +5,9 @@ namespace AdventOfCode._2015;
 /// <summary>
 /// <see href="https://adventofcode.com/2015/day/3"/>
 /// </summary>
+[Day(2015, 3)]
 internal class Day3 : Day
 {
-    public override int Year => 2015;
-
-    public override int DayNumber => 3;
-
-    public override string Synopsis => @"";
-
     public override string Input => Resources._2015_3_Input;
 
     public override async Task<string> Solve(string input)

@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode._2024;
 
+/// <summary>
+/// <see href="https://adventofcode.com/2024/day/6"/>
+/// </summary>
+[Day(2024, 6)]
 internal class Day6 : Day
 {
-    public override int Year => 2024;
-
-    public override int DayNumber => 6;
-
-    public override string Synopsis => throw new NotImplementedException();
-
     public override string Input => Resources._2024_6_Input;
 
     public override async Task<string> Solve(string input)

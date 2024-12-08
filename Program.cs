@@ -1,6 +1,7 @@
 ﻿using AdventOfCode;
 using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.Metadata;
 
 Dictionary<int, List<Day>> days = [];
 var assembly = Assembly.GetExecutingAssembly()
@@ -16,20 +17,21 @@ foreach (var type in assembly.GetTypes())
     Day instance = (Day?)Activator.CreateInstance(type)
         ?? throw new Exception("Instance was null");
 
-    Debug.WriteLine(
-        $"Adding day {instance.DayNumber} to year {instance.Year}");
+    var dayAttr = (DayAttribute?)instance.GetType()
+        .GetCustomAttribute(typeof(DayAttribute), true) 
+        ?? throw new Exception($"{nameof(DayAttribute)} was null");
 
-    if (!days.TryGetValue(instance.Year, out List<Day>? value))
+    Debug.WriteLine(
+        $"Adding day {dayAttr.Day} to year {dayAttr.Year}");
+
+    if (!days.TryGetValue(dayAttr.Year, out List<Day>? value))
     {
         value = [];
-        days[instance.Year] = value;
+        days[dayAttr.Year] = value;
     }
 
-    value.Add(instance);
+    value.Insert(dayAttr.Day - 1, instance);
 }
-
-foreach (var key in days.Keys)
-    days[key] = [.. days[key].OrderBy(d => d.DayNumber)];
 
 int? year = null;
 int? dayNumber = null;

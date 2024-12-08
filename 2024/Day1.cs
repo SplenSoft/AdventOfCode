@@ -5,14 +5,9 @@ namespace AdventOfCode._2024;
 /// <summary>
 /// <see href="https://adventofcode.com/2024/day/1"/>
 /// </summary>
+[Day(2024, 1)]
 internal class Day1 : Day
 {
-    public override int Year => 2024;
-
-    public override int DayNumber => 1;
-
-    public override string Synopsis => @"";
-
     public override string Input => Resources._2024_1_Input;
 
     /// <param name="input">

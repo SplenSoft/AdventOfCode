@@ -2,20 +2,19 @@
 
 namespace AdventOfCode._2024;
 
+/// <summary>
+/// <see href="https://adventofcode.com/2024/day/7"/>
+/// </summary>
+[Day(2024, 7)]
 internal class Day7 : Day
 {
-    public override int Year => 2024;
-
-    public override int DayNumber => 7;
-
-    public override string Synopsis => throw new NotImplementedException();
-
     public override string Input => Resources._2024_7_Input;
 
     public override async Task<string> Solve(string input)
     {
         bool Solve(long res, long[] n, int o /*op*/, int t /*total # ops*/)
         {
+            if (n[0] > res) return false;
             if (n.Length == 1) return n[0] == res;
 
             long n1 = o == 0 ? n[0] + n[1] : o == 1 ? n[0] * n[1] // +, *
