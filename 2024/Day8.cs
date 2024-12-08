@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace AdventOfCode._2024;
 
@@ -12,10 +8,30 @@ namespace AdventOfCode._2024;
 [Day(2024, 8)]
 internal class Day8 : Day
 {
-    public override string Input => throw new NotImplementedException();
+    public override string Input => Resources._2024_8_Input;
 
-    public override Task<string> Solve(string input)
+    public override async Task<string> Solve(string input)
     {
-        throw new NotImplementedException();
+        string[] lines = input.Split(Environment.NewLine);
+        List<List<Vector2>> nodes = [[/*part1*/], [/*part2*/]];
+        List<(char c, Vector2 v)> ants = [..lines.SelectMany((y, i) => y
+            .Select((x, j) => (x, new Vector2(j, i)))).Where(x => x.x != '.')];
+
+        ants.ForEach(a1 => ants
+            .Where(a2 => a1 != a2 && a1.c == a2.c).ToList().ForEach(a2 =>
+            {
+                var antiNode = a1.v + (a1.v - a2.v);
+                nodes[0].Add(antiNode);
+                nodes[1] = [.. nodes[1], antiNode, a1.v];
+
+                while (IsInBounds(antiNode))
+                    nodes[1].Add(antiNode += a1.v - a2.v);
+            }));
+
+        bool IsInBounds(Vector2 pos)=> pos.X >= 0 && pos.X < lines[0].Length 
+            && pos.Y >= 0 && pos.Y < lines.Length;
+
+        return $"Part 1: {nodes[0].Distinct().Where(IsInBounds).Count()}" +
+            $"\nPart 2: {nodes[1].Distinct().Where(IsInBounds).Count()}";
     }
 }

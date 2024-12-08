@@ -152,5 +152,15 @@ namespace AdventOfCode {
                 return ResourceManager.GetString("2024.7.Test.Input", resourceCulture);
             }
         }
+        internal static string _2024_8_Input {
+            get {
+                return ResourceManager.GetString("2024.8.Input", resourceCulture);
+            }
+        }
+        internal static string _2024_8_Test_Input {
+            get {
+                return ResourceManager.GetString("2024.8.Test.Input", resourceCulture);
+            }
+        }
     }
 }
