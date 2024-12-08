@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode._2024;
 
@@ -19,92 +11,39 @@ internal class Day7 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_7_Input;
-    //public override string Input => Resources._2024_7_Test_Input;
-
-    private void WriteToFile(Dictionary<int, long> solutions)
-    {
-        List<string> list = [];
-        foreach (var item in solutions) 
-        {
-            list.Add($"{item.Key}: {item.Value}");
-        }
-        File.WriteAllLines("solutions2.txt", list);
-    }
 
     public override async Task<string> Solve(string input)
     {
-        long total = 0;
-        string[] lines = input.Split(Environment.NewLine);
-        var regex = new Regex(@"(\d+?):\s(.+)");
-        bool GetCombos(int max, ushort str, long res, int[] ints, int k)
+        bool Solve(long res, long[] ints, int o, int t)
         {
-            if (k == max)
-            {
-                long amt = ints[0];
+            if (ints[0] > res) return false;
+            if (ints.Length == 1) return ints[0] == res;
 
-                for (int i = 0; i < max; i++)
-                    amt = (str & (1 << (max - i - 1))) != 0 
-                        ? amt + ints[i + 1] : amt * ints[i + 1];
+            long n1 = o == 0 ? ints[0] + ints[1] : o == 1 ? ints[0] * ints[1] 
+                : long.Parse(ints[0].ToString() + ints[1].ToString());
 
-                return amt == res;
-            }
-
-            for (int j = k; j < max; j++)
-                if (GetCombos(max, (ushort)(str ^ (1 << j)), res, ints, k + 1) 
-                    || GetCombos(max, str, res, ints, k + 1))
+            for (int i = 0; i < t; i++)
+                if (Solve(res, [..new long[1] { n1 }, ..ints.Skip(2)], i, t))
                     return true;
 
             return false;
         }
-        Dictionary<int, long> solutions = [];
-        //if (File.Exists("solutions2.txt"))
-        //{
-        //    string[] solutionsStrings = File.ReadAllLines("solutions2.txt");
 
-        //    foreach (string line in solutionsStrings)
-        //    {
-        //        var grp = regex.Match(line).Groups;
-        //        solutions[int.Parse(grp[1].Value)] = long.Parse(grp[2].Value);
-        //    }
-        //}
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        //for (int i = 0; i < lines.Length; i++)
-        Parallel.For(0, lines.Length, i =>
-        {
-            //float percent = solutions.Keys.Count / (float)lines.Length * 100;
-            //Console.WriteLine($"Line {i + 1} of {lines.Length} ({percent:0.0}%)");
-            Console.WriteLine($"Time elapsed: {stopwatch.Elapsed}");
-            //if (solutions.ContainsKey(i))
-            //{
-            //    Console.WriteLine("Skipped line " + (i + 1));
-            //}
-            //else
-            //{
-                string line = lines[i];
-                Console.WriteLine(line);
-                var grp = regex.Match(line).Groups;
-                long res = long.Parse(grp[1].Value);
-                var ints = grp[2].Value.Split(' ').Select(int.Parse).ToArray();
-                bool success = GetCombos(ints.Length - 1, 0, res, ints, 0);
-                lock (regex)
-                {
-                    if (success)
+        long[] totals = [0, 0];
+        string[] lines = input.Split(Environment.NewLine);
+        for (int totalOps = 2; totalOps < 4; totalOps++)
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var g = new Regex(@"(\d+?):\s(.+)").Match(lines[i]).Groups;
+                var ints = g[2].Value.Split(' ').Select(long.Parse).ToArray();
+
+                for (int j = 0; j < totalOps; j++)
+                    if (Solve(long.Parse(g[1].Value), ints, j, totalOps))
                     {
-                        Interlocked.Add(ref total, res);
-                        solutions[i] = res;
-
+                        totals[totalOps - 2] += long.Parse(g[1].Value);
+                        break;
                     }
-                    else
-                    {
-                        solutions[i] = 0;
-                    }
-                    //WriteToFile(solutions);
-                }
-            //}
-
-        });
-        stopwatch.Stop();
-        return solutions.Values.Sum().ToString();
+            }
+        return $"Part 1 solution: {totals[0]}\nPart 2 solution: {totals[1]}";
     }
 }
