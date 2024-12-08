@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -16,59 +19,92 @@ internal class Day7 : Day
     public override string Synopsis => throw new NotImplementedException();
 
     public override string Input => Resources._2024_7_Input;
+    //public override string Input => Resources._2024_7_Test_Input;
 
-    public override string Solve(string input)
+    private void WriteToFile(Dictionary<int, long> solutions)
     {
-        var regex = new Regex(@"(\d+?):\s(.+)");
-        string[] lines = input.Split(Environment.NewLine);
-        char[] possibleOps = ['+', '*'];
-        long total = 0;
-
-        void GetCombos(int max, string current, List<string> list)
+        List<string> list = [];
+        foreach (var item in solutions) 
         {
-            if (current.Length == max)
-            {
-                if (!list.Contains(current)) list.Add(current);
-                return;
-            }
-            
-            for (int j = current.Length; j < max; j++)
-                for (int i = 0; i < possibleOps.Length; i++)
-                    GetCombos(max, current + possibleOps[i], list);
+            list.Add($"{item.Key}: {item.Value}");
         }
+        File.WriteAllLines("solutions2.txt", list);
+    }
 
-        foreach (var line in lines) 
+    public override async Task<string> Solve(string input)
+    {
+        long total = 0;
+        string[] lines = input.Split(Environment.NewLine);
+        var regex = new Regex(@"(\d+?):\s(.+)");
+        bool GetCombos(int max, ushort str, long res, int[] ints, int k)
         {
-            var grp = regex.Match(line).Groups;
-            long res = long.Parse(grp[1].Value);
-            int[] ints = grp[2].Value.Split(' ').Select(int.Parse).ToArray();
-            var list = new List<string>();
-            GetCombos(ints.Length - 1, "", list);
-            foreach (var str in list)
+            if (k == max)
             {
-                long subtotal = ints[0];
+                long amt = ints[0];
 
-                for (int i = 0; i < str.Length; i++)
+                for (int i = 0; i < max; i++)
+                    amt = (str & (1 << (max - i - 1))) != 0 
+                        ? amt + ints[i + 1] : amt * ints[i + 1];
+
+                return amt == res;
+            }
+
+            for (int j = k; j < max; j++)
+                if (GetCombos(max, (ushort)(str ^ (1 << j)), res, ints, k + 1) 
+                    || GetCombos(max, str, res, ints, k + 1))
+                    return true;
+
+            return false;
+        }
+        Dictionary<int, long> solutions = [];
+        //if (File.Exists("solutions2.txt"))
+        //{
+        //    string[] solutionsStrings = File.ReadAllLines("solutions2.txt");
+
+        //    foreach (string line in solutionsStrings)
+        //    {
+        //        var grp = regex.Match(line).Groups;
+        //        solutions[int.Parse(grp[1].Value)] = long.Parse(grp[2].Value);
+        //    }
+        //}
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        //for (int i = 0; i < lines.Length; i++)
+        Parallel.For(0, lines.Length, i =>
+        {
+            //float percent = solutions.Keys.Count / (float)lines.Length * 100;
+            //Console.WriteLine($"Line {i + 1} of {lines.Length} ({percent:0.0}%)");
+            Console.WriteLine($"Time elapsed: {stopwatch.Elapsed}");
+            //if (solutions.ContainsKey(i))
+            //{
+            //    Console.WriteLine("Skipped line " + (i + 1));
+            //}
+            //else
+            //{
+                string line = lines[i];
+                Console.WriteLine(line);
+                var grp = regex.Match(line).Groups;
+                long res = long.Parse(grp[1].Value);
+                var ints = grp[2].Value.Split(' ').Select(int.Parse).ToArray();
+                bool success = GetCombos(ints.Length - 1, 0, res, ints, 0);
+                lock (regex)
                 {
-                    char c = str[i];
-                    if (c == '+')
+                    if (success)
                     {
-                        subtotal += ints[i + 1];
+                        Interlocked.Add(ref total, res);
+                        solutions[i] = res;
+
                     }
                     else
                     {
-                        subtotal *= ints[i + 1];
+                        solutions[i] = 0;
                     }
+                    //WriteToFile(solutions);
                 }
+            //}
 
-                if (subtotal == res)
-                {
-                    total += subtotal;
-                    break;
-                }
-            }
-        }
-
-        return total.ToString();
+        });
+        stopwatch.Stop();
+        return solutions.Values.Sum().ToString();
     }
 }
