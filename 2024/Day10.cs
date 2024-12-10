@@ -8,45 +8,39 @@ namespace AdventOfCode._2024;
 [Day(2024, 10)]
 internal class Day10 : Day
 {
-    public override string Input => Resources._2024_10_Input;
-    //public override string Input => Resources._2024_10_Test_Input;
-    //51
+    //public override string Input => Resources._2024_10_Input;
+    public override string Input => Resources._2024_10_Test_Input;
+    //47
     public override async Task Solve(string input, long[] tot)
     {
-        string[] lines = input.Split(Environment.NewLine);
-        int[,] map = new int[lines[0].Length, lines.Length];
+        List<List<int>> lines = [..input.Split(Environment.NewLine)
+            .Select(x => x.Select(y => int.Parse(y.ToString())).ToList())];
 
-        for (int y = 0; y < lines.Length; y++)
-            for (int x = 0; x < lines[y].Length; x++)
-                map[x, y] = int.Parse(lines[y][x].ToString());
-
-        for (int y = 0; y < lines.Length; y++)
-            for (int x = 0; x < lines[y].Length; x++)
-                if (map[x, y] == 0)
+        for (int y = 0; y < lines.Count; y++)
+            for (int x = 0; x < lines[y].Count; x++)
+                if (lines[y][x] == 0)
                 {
-                    List<Vector2> tops = [];
-                    Path([new Vector2(x, y)], tops);
-                    tot[0] += tops.Distinct().Count();
-                    tot[1] += tops.Count;
+                    tot[0] += Path([new(x, y)], []).Distinct().Count();
+                    tot[1] += Path([new(x, y)], []).Count;
                 }
 
-        void Path(List<Vector2> pathSoFar, List<Vector2> tops)
+        List<Vector2> Path(List<Vector2> pathSoFar, List<Vector2> tops)
         {
             Vector2 pos = pathSoFar.Last();
-            
-            if (map[(int)pos.X, (int)pos.Y] == 9) tops.Add(pos);
+            if (lines[(int)pos.Y][(int)pos.X] == 9) tops.Add(pos);
             else for (int x = -1; x <= 1; x++)
                 for (int y = -1; y <= 1; y++)
                     {
                         Vector2 newPos = new(pos.X + x, pos.Y + y);
                         if ((x == 0 || y == 0) && newPos.X >= 0
-                            && newPos.X < lines[0].Length
-                            && newPos.Y < lines.Length && newPos.Y >= 0
-                            && map[(int)newPos.X, (int)newPos.Y]
-                            - map[(int)pos.X, (int)pos.Y] == 1
+                            && newPos.X < lines[0].Count
+                            && newPos.Y < lines.Count && newPos.Y >= 0
+                            && lines[(int)newPos.Y][(int)newPos.X]
+                            - lines[(int)pos.Y][(int)pos.X] == 1
                             && !pathSoFar.Contains(newPos))
                                 Path([.. pathSoFar, newPos], tops);
                     }
+            return tops;
         }
     }
 }
