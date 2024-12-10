@@ -21,6 +21,23 @@ internal class Day10 : Day
             for (int x = 0; x < lines[y].Length; x++)
                 map[x][y] = int.Parse(lines[y][x]);
 
-        
+        bool IsOffMap(Vector2 pos)
+        {
+            return pos.X < 0 || pos.Y < 0 || pos.X >= lines[0].Length || pos.Y >= lines.Length;
+        }
+
+        bool IsTopHeight(Vector2 pos)
+        {
+            
+        }
+
+        void Path(List<Vector2> pathSoFar)
+        {
+            Vector2 currentTile = pathSoFar.Last();
+            if (IsOffMap(currentTile)) return;
+            if (
+            int currentHeight = 
+            for (x
+        }
     }
 }
