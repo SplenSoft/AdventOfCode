@@ -30,7 +30,7 @@ foreach (var type in assembly.GetTypes())
         days[dayAttr.Year] = value;
     }
 
-    value.Insert(dayAttr.Day - 1, instance);
+    value.Insert(Math.Min(dayAttr.Day - 1, value.Count), instance);
 }
 
 int? year = null;
