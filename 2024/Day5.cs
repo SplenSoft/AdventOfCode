@@ -10,9 +10,8 @@ internal class Day5 : Day
 {
     public override string Input => Resources._2024_5_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
-        int[] total = new int[2];
         string[] n = input.Split(Environment.NewLine);
         var r = n.Where(x => x.Contains('|')).Select(x => x.Split('|'));
         Dictionary<string, List<string>> rules = [];
@@ -36,9 +35,7 @@ internal class Day5 : Day
                             goto Top;
                         }
 
-            total[k] += int.Parse(arr[arr.Length / 2]);
+            totals[k] += int.Parse(arr[arr.Length / 2]);
         }
-
-        return $"Part 1 solution: {total[0]}\nPart 2 solution: {total[1]}";
     }
 }

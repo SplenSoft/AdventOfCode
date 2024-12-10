@@ -8,19 +8,18 @@ internal class Day1 : Day
 {
     public override string Input => Resources._2015_1_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
-        int floor = 0;
         int? basementPos = null;
 
         for (int i = 0; i < input.Length; i++)
         {
-            floor += input[i] == '(' ? 1 : -1;
+            totals[0] += input[i] == '(' ? 1 : -1;
 
-            if (basementPos == null && floor == -1)
+            if (basementPos == null && totals[0] == -1)
                 basementPos = i + 1;
         }
 
-        return $"Part 1 solution: {floor}\nPart 2 solution: {basementPos}";
+        totals[1] = (long)basementPos;
     }
 }

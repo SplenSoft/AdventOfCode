@@ -10,7 +10,7 @@ internal class Day3 : Day
 {
     public override string Input => Resources._2015_3_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         Dictionary<float, List<float>> houses;
         Vector2[] santas = new Vector2[2];
@@ -35,9 +35,7 @@ internal class Day3 : Day
                 Move(ref santas[j == 1 ? 0 : i % 2], input[i]);
 
             int t = houses.SelectMany(x => houses[x.Key].Distinct()).Count();
-            result = $"Part {(j == 0 ? 2 : 1)} solution: {t + j}\n" + result;
+            totals[j == 0 ? 1 : 0] = t + j;
         }
-
-        return result;
     }
 }

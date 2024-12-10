@@ -19,12 +19,11 @@ internal class Day4 : Day
     /// <para />
     /// Part 2: Handle X-Mas by validating 3x3 sections of the input grid
     /// </summary>
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         int Count(string s, string v) => new Regex(v).Matches(s).Count;
         bool Valid(string s) => s is "SM" or "MS";
         string[] lines = input.Split(Environment.NewLine); // Horizontals
-        int[] total = new int[2];
         List<List<string>> lists = [lines.Select(x => "").ToList(), [], []];
 
         for (int y = 0; y < lines.Length; y++)
@@ -37,11 +36,10 @@ internal class Day4 : Day
                     && lines[y + 1][x + 1] == 'A'
                     && Valid($"{lines[y][x]}{lines[y + 2][x + 2]}")
                     && Valid($"{lines[y][x + 2]}{lines[y + 2][x]}"))
-                    total[1]++;
+                    totals[1]++;
 
-                // Construct diagonals
                 if (y == 0 || x == 0 || x == lines[y].Length - 1)
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < 2; i++) // Construct diagonals
                     {
                         int a = x;
                         int b = y;
@@ -58,10 +56,7 @@ internal class Day4 : Day
                     }
             }
 
-        // Solve part 1
-        foreach (var line in lists.SelectMany(x => x).Concat(lines))
-            total[0] += Count(line, "XMAS") + Count(line, "SAMX");
-
-        return $"Part 1 solution: {total[0]}\nPart 2 solution: {total[1]}";
+        foreach (var line in lists.SelectMany(x => x).Concat(lines)) // Part 1
+            totals[0] += Count(line, "XMAS") + Count(line, "SAMX");
     }
 }

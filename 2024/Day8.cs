@@ -10,7 +10,7 @@ internal class Day8 : Day
 {
     public override string Input => Resources._2024_8_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         string[] lines = input.Split(Environment.NewLine);
         List<List<Vector2>> nodes = [[/*part1*/], [/*part2*/]];
@@ -29,7 +29,7 @@ internal class Day8 : Day
         bool IsInBounds(Vector2 pos)=> pos.X >= 0 && pos.X < lines[0].Length 
             && pos.Y >= 0 && pos.Y < lines.Length;
 
-        return $"Part 1: {nodes[0].Distinct().Where(IsInBounds).Count()}" +
-            $"\nPart 2: {nodes[1].Distinct().Where(IsInBounds).Count()}";
+        totals[0] = nodes[0].Distinct().Where(IsInBounds).Count();
+        totals[1] = nodes[1].Distinct().Where(IsInBounds).Count();
     }
 }

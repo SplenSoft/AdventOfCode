@@ -14,7 +14,7 @@ internal class Day1 : Day
     /// A string consisting of multiple lines of two side-by-side 
     /// numbers, separated by three spaces
     /// </param>
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         var regex = new Regex(@"(\d{5})\s{3}(\d{5})(?:\n|\r\n|$)");
         List<List<int>> lists = [[], []];
@@ -26,21 +26,16 @@ internal class Day1 : Day
         for (int i = 0; i < lists.Count; i++)
             lists[i] = [.. lists[i].Order()];
 
-        int part1 = 0;
-        int part2 = 0;
-
         for (int i = 0; i < lists[0].Count; i++)
         {
             int item1 = lists[0][i];
-            part1 += Math.Abs(item1 - lists[1][i]);
+            totals[0] += Math.Abs(item1 - lists[1][i]);
             int appearances = 0;
 
             for (int j = 0; j < lists[1].Count; j++)
                 if (item1 == lists[1][j]) appearances++;
 
-            part2 += item1 * appearances;
+            totals[1] += item1 * appearances;
         }
-
-        return $"Part 1 solution: {part1}\nPart 2 solution: {part2}";
     }
 }

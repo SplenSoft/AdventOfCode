@@ -8,7 +8,7 @@ internal class Day2 : Day
 {
     public override string Input => Resources._2024_2_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         IEnumerable<IEnumerable<int>> reports = input.Split("\r\n")
             .Select(x => x.Split(" ")
@@ -31,9 +31,7 @@ internal class Day2 : Day
             return subReports.Any(isReportGood);
         }
 
-        int part1 = reports.Count(isReportGood);
-        int part2 = reports.Count(isAnySubReportGood);
-
-        return $"Part 1 solution: {part1}\nPart 2 solution: {part2}";
+        totals[0] = reports.Count(isReportGood);
+        totals[1] = reports.Count(isAnySubReportGood);
     }
 }

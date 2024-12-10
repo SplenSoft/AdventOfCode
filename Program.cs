@@ -83,4 +83,7 @@ while (dayNumber == null)
 
 Console.WriteLine($"Solving Advent of Code year {year}, day {dayNumber + 1}");
 Day day = days[(int)year][(int)dayNumber];
-Console.WriteLine(await day.Solve(day.Input));
+long[] totals = [0, 0];
+await day.Solve(day.Input, totals);
+string result = $"Part 1 solution: {totals[0]}\nPart 2 solution: {totals[1]}";
+Console.WriteLine(result);

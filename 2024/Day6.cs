@@ -11,9 +11,8 @@ internal class Day6 : Day
 {
     public override string Input => Resources._2024_6_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
-        StringBuilder result = new("Part 1 solution: ");
         List<List<Vector2>> vecs = [[/*path*/], [/*obstacles*/], [/*count*/]]; 
         Dictionary<char, Vector2> dirs = new()
             {{'^', new (0, -1)}, {'>', new (1, 0)},
@@ -52,12 +51,15 @@ internal class Day6 : Day
         if (vecs[0].Count == 0 && Patrol()) // Solve part 1
         {
             vecs[0] = path;
-            result.Append(path.Distinct().Count());
+            totals[0] = path.Distinct().Count();
             goto Start;
         }
 
         if (vecs[1].Count == vecs[0].Count) // We've tried all obstacles
-            return result.ToString() + $"\nPart 2 solution: {vecs[2].Count}";
+        {
+            totals[1] = vecs[2].Count;
+            return;
+        }
 
         var obs = vecs[0][vecs[1].Count]; // Part 2, adding obstacles
         bool exists = vecs[1].Contains(obs);

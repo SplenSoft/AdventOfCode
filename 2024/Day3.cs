@@ -10,7 +10,7 @@ internal class Day3 : Day
 {
     public override string Input => Resources._2024_3_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         var regex = new Regex(@"mul\((\d{1,3}),(\d{1,3})\)");
 
@@ -35,7 +35,7 @@ internal class Day3 : Day
             .Select(x => int.Parse(x.Groups[2].Value)), (x, y) => x * y)
             .Sum();
 
-        int part2 = getSum(getTrimmed(input));
-        return $"Part 1 solution: {getSum(input)}\nPart 2 solution: {part2}";
+        totals[1] = getSum(getTrimmed(input));
+        totals[0] = getSum(input);
     }
 }

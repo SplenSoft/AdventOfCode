@@ -10,7 +10,7 @@ internal class Day7 : Day
 {
     public override string Input => Resources._2024_7_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         bool Solve(long res, long[] n, int o /*op*/, int t /*total # ops*/)
         {
@@ -27,7 +27,6 @@ internal class Day7 : Day
             return false; // We can't match res
         }
 
-        long[] totals = [0 /*part1*/, 0 /*part2*/];
         string[] lines = input.Split(Environment.NewLine);
         for (int totalOps = 2; totalOps < 4; totalOps++) // + and *, then ||
             for (int i = 0; i < lines.Length; i++)
@@ -42,6 +41,5 @@ internal class Day7 : Day
                         break;
                     }
             }
-        return $"Part 1 solution: {totals[0]}\nPart 2 solution: {totals[1]}";
     }
 }

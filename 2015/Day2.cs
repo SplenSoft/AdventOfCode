@@ -10,7 +10,7 @@ internal class Day2 : Day
 {
     public override string Input => Resources._2015_2_Input;
 
-    public override async Task<string> Solve(string input)
+    public override async Task Solve(string input, long[] totals)
     {
         var regex = new Regex(@"(\d+?)x(\d+?)x(\d+?)(?:\n|\r\n|$)");
         List<(int, int, int)> list = [];
@@ -19,9 +19,6 @@ internal class Day2 : Day
             list.Add((int.Parse(match.Groups[1].Value),
                 int.Parse(match.Groups[2].Value),
                 int.Parse(match.Groups[3].Value)));
-
-        int paper = 0;
-        int ribbon = 0;
 
         foreach (var present in list)
         {
@@ -43,10 +40,8 @@ internal class Day2 : Day
 
             int volume = present.Item1 * present.Item2 * present.Item3;
 
-            paper += smallestDim + surfaceArea;
-            ribbon += volume + ribbon1;
+            totals[0] += smallestDim + surfaceArea;
+            totals[1] += volume + ribbon1;
         }
-
-        return $"Part 1 solution: {paper}\nPart 2 solution: {ribbon}";
     }
 }
