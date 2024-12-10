@@ -28,16 +28,30 @@ internal class Day10 : Day
 
         bool IsTopHeight(Vector2 pos)
         {
-            
+            return map[pos.X][pos.Y] == 9;
         }
 
         void Path(List<Vector2> pathSoFar)
         {
-            Vector2 currentTile = pathSoFar.Last();
-            if (IsOffMap(currentTile)) return;
-            if (
-            int currentHeight = 
-            for (x
+            Vector2 pos = pathSoFar.Last();
+            
+            if (IsTopHeight(pos))
+            {
+                tot[0]++;
+                return;
+            }
+            int height = map[pos.X][pos.Y];
+            for (int x = -1; x <= 1; x += 2)
+                for (int y = -1; y <= 1; y += 2)
+                {
+                    Vector2 newPos = new(pos.X + x, pos.Y + y);
+                    int newHeight = map[newPos.X][newPos.Y];
+                    if (newHeight - height != 1) continue;
+                    if (pathSoFar.Contains(newPos)) continue;
+                    if (IsOffMap(newPos)) continue;
+                    List<Vector2> newPath = [..pathSoFar, newPos];
+                    Path(newPath);
+                }
         }
     }
 }
