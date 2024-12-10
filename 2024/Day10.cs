@@ -19,7 +19,7 @@ internal class Day10 : Day
 
         for (int y = 0; y < lines.Length; y++)
             for (int x = 0; x < lines[y].Length; x++)
-                map[x][y] = int.Parse(lines[y][x]);
+                map[x, y] = int.Parse(lines[y][x].ToString());
 
         bool IsOffMap(Vector2 pos)
         {
@@ -28,7 +28,7 @@ internal class Day10 : Day
 
         bool IsTopHeight(Vector2 pos)
         {
-            return map[pos.X][pos.Y] == 9;
+            return map[(int)pos.X, (int)pos.Y] == 9;
         }
 
         void Path(List<Vector2> pathSoFar)
@@ -40,12 +40,12 @@ internal class Day10 : Day
                 tot[0]++;
                 return;
             }
-            int height = map[pos.X][pos.Y];
+            int height = map[(int)pos.X, (int)pos.Y];
             for (int x = -1; x <= 1; x += 2)
                 for (int y = -1; y <= 1; y += 2)
                 {
                     Vector2 newPos = new(pos.X + x, pos.Y + y);
-                    int newHeight = map[newPos.X][newPos.Y];
+                    int newHeight = map[(int)newPos.X, (int)newPos.Y];
                     if (newHeight - height != 1) continue;
                     if (pathSoFar.Contains(newPos)) continue;
                     if (IsOffMap(newPos)) continue;
