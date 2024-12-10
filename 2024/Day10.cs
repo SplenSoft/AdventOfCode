@@ -8,26 +8,21 @@ namespace AdventOfCode._2024;
 [Day(2024, 10)]
 internal class Day10 : Day
 {
-    //public override string Input => Resources._2024_10_Input;
-    public override string Input => Resources._2024_10_Test_Input;
-    //47
+    public override string Input => Resources._2024_10_Input;
+
     public override async Task Solve(string input, long[] tot)
     {
         List<List<int>> lines = [..input.Split(Environment.NewLine)
             .Select(x => x.Select(y => int.Parse(y.ToString())).ToList())];
+        var lists = lines.SelectMany((a, y) => a
+            .Select((b, x) => (y, x, b))).Where(c => c.b == 0)
+            .Select(x => Path([new(x.x, x.y)], [], new(x.x, x.y))).ToList();
+        tot[0] = lists.Sum(x => x.Distinct().Count());
+        tot[1] = lists.Sum(x => x.Length);
 
-        for (int y = 0; y < lines.Count; y++)
-            for (int x = 0; x < lines[y].Count; x++)
-                if (lines[y][x] == 0)
-                {
-                    tot[0] += Path([new(x, y)], []).Distinct().Count();
-                    tot[1] += Path([new(x, y)], []).Count;
-                }
-
-        List<Vector2> Path(List<Vector2> pathSoFar, List<Vector2> tops)
+        Vector2[] Path(Vector2[] pathSoFar, List<Vector2> tops, Vector2 pos)
         {
-            Vector2 pos = pathSoFar.Last();
-            if (lines[(int)pos.Y][(int)pos.X] == 9) tops.Add(pos);
+            if (lines[(int)pos.Y][(int)pos.X] > 8) tops.Add(pos);
             else for (int x = -1; x <= 1; x++)
                 for (int y = -1; y <= 1; y++)
                     {
@@ -38,9 +33,9 @@ internal class Day10 : Day
                             && lines[(int)newPos.Y][(int)newPos.X]
                             - lines[(int)pos.Y][(int)pos.X] == 1
                             && !pathSoFar.Contains(newPos))
-                                Path([.. pathSoFar, newPos], tops);
+                                Path([.. pathSoFar, newPos], tops, newPos);
                     }
-            return tops;
+            return [..tops];
         }
     }
 }
