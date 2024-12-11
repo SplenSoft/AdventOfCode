@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,27 +16,41 @@ internal class Day11 : Day
     public override async Task Solve(string input, long[] totals)
     {
         List<long> stones = [.. input.Split(' ').Select(long.Parse)];
+        ConcurrentBag<long> newStones = [];
         for (int i = 0; i < 75; i++)
         {
             Console.WriteLine($"Blink {i + 1} of {75}");
-            for (int j = 0; j < stones.Count; j++)
+            newStones.Clear();
+
+            long stonesPerProcessor = (long)Math.Ceiling((decimal)stones.Count / Environment.ProcessorCount);
+
+            List<Action> tasks = [];
+
+            for (int j = 0; j < stonesPerProcessor; j++) 
+            { 
+                
+            }
+
+            Parallel.ForEach(stones, stone =>
             {
-                long stone = stones[j];
-                if (stone == 0) stones[j] = 1;
-                else if (stone.ToString().Length % 2 == 0)
+                string asString = stone.ToString();
+                if (stone == 0)
                 {
-                    int halfIndex = (stone.ToString().Length / 2);
-                    int remainder = stone.ToString().Length - halfIndex;
-                    stones[j] = long.Parse(stone.ToString()[..halfIndex]);
-                    stones.Insert(j + 1, long.Parse(stone.ToString()[^remainder..]));
-                    j++;
+                    newStones.Add(1);
+                }
+                else if (asString.Length % 2 == 0)
+                {
+                    int halfIndex = (asString.Length / 2);
+                    int remainder = asString.Length - halfIndex;
+                    newStones.Add(long.Parse(asString[..halfIndex]));
+                    newStones.Add(long.Parse(asString[^remainder..]));
                 }
                 else
                 {
-                    stones[j] = stones[j] * 2024;
+                    newStones.Add(stone * 2024);
                 }
-            }
-
+            });
+            stones = [..newStones];
             if (i == 24) totals[0] = stones.Count;
             if (i == 75) totals[1] = stones.Count;
         }

@@ -95,7 +95,9 @@ while (isTest == null)
         Console.WriteLine("Invalid response");
     }
 }
-
+Stopwatch stopwatch = Stopwatch.StartNew();
 await day.Solve(isTest == true ? Resources.TestInput : Resources.Input, totals);
+stopwatch.Stop();
 string result = $"Part 1 solution: {totals[0]}\nPart 2 solution: {totals[1]}";
 Console.WriteLine(result);
+Console.WriteLine($"Process took {stopwatch.Elapsed:c}");
