@@ -59,129 +59,20 @@ namespace AdventOfCode {
                 resourceCulture = value;
             }
         }
-
-        /// <summary>
-        /// </summary>
-        internal static string _2015_1_Input {
-            get {
-                return ResourceManager.GetString("2015.1.Input", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        internal static string _2015_2_Input {
-            get {
-                return ResourceManager.GetString("2015.2.Input", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        internal static string _2015_3_Input {
-            get {
-                return ResourceManager.GetString("2015.3.Input", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        internal static string _2024_1_Input {
-            get {
-                return ResourceManager.GetString("2024.1.Input", resourceCulture);
-            }
-        }
         
         /// <summary>
-        internal static string _2024_10_Input {
-            get {
-                return ResourceManager.GetString("2024.10.Input", resourceCulture);
-            }
-        }
-        
-        internal static string _2024_10_Test_Input {
-            get {
-                return ResourceManager.GetString("2024.10.Test.Input", resourceCulture);
-            }
-        }
-        
         /// </summary>
-        internal static string _2024_2_Input {
+        internal static string Input {
             get {
-                return ResourceManager.GetString("2024.2.Input", resourceCulture);
+                return ResourceManager.GetString("Input", resourceCulture);
             }
         }
         
         /// <summary>
         /// </summary>
-        internal static string _2024_3_Input {
+        internal static string TestInput {
             get {
-                return ResourceManager.GetString("2024.3.Input", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// </summary>
-        internal static string _2024_4_Input {
-            get {
-                return ResourceManager.GetString("2024.4.Input", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// </summary>
-        internal static string _2024_4_Synopsis {
-            get {
-                return ResourceManager.GetString("2024.4.Synopsis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// </summary>
-        internal static string _2024_5_Input {
-            get {
-                return ResourceManager.GetString("2024.5.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_5_Test_Input {
-            get {
-                return ResourceManager.GetString("2024.5.Test.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_6_Input {
-            get {
-                return ResourceManager.GetString("2024.6.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_7_Input {
-            get {
-                return ResourceManager.GetString("2024.7.Input", resourceCulture);
-            }
-        }
-        
-        internal static string _2024_7_Test_Input {
-            get {
-                return ResourceManager.GetString("2024.7.Test.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_8_Input {
-            get {
-                return ResourceManager.GetString("2024.8.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_8_Test_Input {
-            get {
-                return ResourceManager.GetString("2024.8.Test.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_9_Input {
-            get {
-                return ResourceManager.GetString("2024.9.Input", resourceCulture);
-            }
-        }
-        internal static string _2024_9_Test_Input {
-            get {
-                return ResourceManager.GetString("2024.9.Test.Input", resourceCulture);
+                return ResourceManager.GetString("TestInput", resourceCulture);
             }
         }
     }

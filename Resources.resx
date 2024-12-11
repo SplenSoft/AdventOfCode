@@ -117,62 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="2024.4.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.4.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="Input" xml:space="preserve">
+    <value />
   </data>
-  <data name="2024.4.Synopsis" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.4.Synopsis.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2015.1.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2015.1.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2015.2.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2015.2.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2015.3.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2015.3.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.1.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.1.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.2.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.2.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.3.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.3.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.5.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.5.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.5.Test.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.5.Test.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.6.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.6.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.7.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.7.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.7.Test.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.7.Test.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.8.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.8.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.8.Test.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.8.Test.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.9.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.9.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.9.Test.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.9.Test.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.10.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.10.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="2024.10.Test.Input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\2024.10.Test.Input.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="TestInput" xml:space="preserve">
+    <value />
   </data>
 </root>
