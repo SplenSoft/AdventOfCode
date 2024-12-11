@@ -84,6 +84,18 @@ while (dayNumber == null)
 Console.WriteLine($"Solving Advent of Code year {year}, day {dayNumber + 1}");
 Day day = days[(int)year][(int)dayNumber];
 long[] totals = [0, 0];
-await day.Solve(day.Input, totals);
+bool? isTest = null;
+while (isTest == null)
+{
+    Console.WriteLine("Use test input? (y/n)");
+    string? answer = Console.ReadLine();
+    isTest = answer == "y" ? true : answer == "n" ? false : null;
+    if (isTest == null)
+    {
+        Console.WriteLine("Invalid response");
+    }
+}
+
+await day.Solve(isTest == true ? Resources.TestInput : Resources.Input, totals);
 string result = $"Part 1 solution: {totals[0]}\nPart 2 solution: {totals[1]}";
 Console.WriteLine(result);

@@ -6,8 +6,6 @@
 [Day(2015, 1)]
 internal class Day1 : Day
 {
-    public override string Input => Resources._2015_1_Input;
-
     public override async Task Solve(string input, long[] totals)
     {
         int? basementPos = null;

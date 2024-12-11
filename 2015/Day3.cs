@@ -8,8 +8,6 @@ namespace AdventOfCode._2015;
 [Day(2015, 3)]
 internal class Day3 : Day
 {
-    public override string Input => Resources._2015_3_Input;
-
     public override async Task Solve(string input, long[] totals)
     {
         Dictionary<float, List<float>> houses;

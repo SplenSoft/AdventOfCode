@@ -8,8 +8,6 @@ namespace AdventOfCode._2024;
 [Day(2024, 7)]
 internal class Day7 : Day
 {
-    public override string Input => Resources._2024_7_Input;
-
     public override async Task Solve(string input, long[] totals)
     {
         bool Solve(long res, long[] n, int o /*op*/, int t /*total # ops*/)

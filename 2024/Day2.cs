@@ -6,8 +6,6 @@
 [Day(2024, 2)]
 internal class Day2 : Day
 {
-    public override string Input => Resources._2024_2_Input;
-
     public override async Task Solve(string input, long[] totals)
     {
         IEnumerable<IEnumerable<int>> reports = input.Split("\r\n")

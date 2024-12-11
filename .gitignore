@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 *.Input.txt
 *.Synopsis.txt
+Resources.Designer.cs

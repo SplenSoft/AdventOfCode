@@ -8,10 +8,6 @@ namespace AdventOfCode._2024;
 [Day(2024, 4)]
 internal class Day4 : Day
 {
-    public override string Synopsis => Resources._2024_4_Synopsis;
-
-    public override string Input => Resources._2024_4_Input;
-
     /// <summary>
     /// Part 1: Flattens input into 4 lists of strings (horizontal, vertical, 
     /// diagonal left, diagonal right), then counts "XMAS" or "SAMX" 

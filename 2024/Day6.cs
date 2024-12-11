@@ -9,8 +9,6 @@ namespace AdventOfCode._2024;
 [Day(2024, 6)]
 internal class Day6 : Day
 {
-    public override string Input => Resources._2024_6_Input;
-
     public override async Task Solve(string input, long[] totals)
     {
         List<List<Vector2>> vecs = [[/*path*/], [/*obstacles*/], [/*count*/]]; 

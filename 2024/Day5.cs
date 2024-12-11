@@ -8,8 +8,6 @@ namespace AdventOfCode._2024;
 [Day(2024, 5)]
 internal class Day5 : Day
 {
-    public override string Input => Resources._2024_5_Input;
-
     public override async Task Solve(string input, long[] totals)
     {
         string[] n = input.Split(Environment.NewLine);

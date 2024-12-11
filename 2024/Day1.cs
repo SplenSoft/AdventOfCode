@@ -8,8 +8,6 @@ namespace AdventOfCode._2024;
 [Day(2024, 1)]
 internal class Day1 : Day
 {
-    public override string Input => Resources._2024_1_Input;
-
     /// <param name="input">
     /// A string consisting of multiple lines of two side-by-side 
     /// numbers, separated by three spaces
