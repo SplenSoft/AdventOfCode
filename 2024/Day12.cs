@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace AdventOfCode._2024;
 
@@ -49,39 +44,35 @@ internal class Day12 : Day
                     }
 
                     char ch = lines[y][x];
-                    Path(new Vector2(x, y), ch);
-                    usedPlots.AddRange(edges.Keys);
+                    Path(new Vector2(x, y), ch); // Map the garden
+                    usedPlots.AddRange(edges.Keys); // No remapping
                     long perim = edges.Values.Select(e => e.Count).Sum();
                     totals[0] += edges.Keys.Count * perim; //Area * perim
                     long sides = 0;
                     List<List<Vector2>> usedCorners = [[], [], [], []];
-
-                    foreach (var item in edges)
+                    foreach (var e in edges) // e = KVP[Vec2, List<Vec2>]
                     {   // Each corner counts as a unique side!
-                        bool r = item.Value.Contains(new Vector2(1, 0));
-                        bool l = item.Value.Contains(new Vector2(-1, 0));
-                        bool t = item.Value.Contains(new Vector2(0, -1));
-                        bool b = item.Value.Contains(new Vector2(0, 1));
+                        int cornerId = 0;
+                        for (int x2 = -1; x2 <= 1; x2++)
+                            for (int y2 = -1; y2 <= 1; y2++)
+                            {   // Analyze four courners (inside and outside)
+                                if (x2 == 0 || y2 == 0) continue; // diag only
+                                var used = usedCorners[cornerId++];
+                                bool edgeY = e.Value.Contains(new(0, y2));
+                                bool edgeX = e.Value.Contains(new(x2, 0));
+                                Vector2 pos2 = e.Key + new Vector2(x2, y2);
+                                if (edgeY && !edgeX && !used.Contains(e.Key)
+                                    && edges.TryGetValue(pos2, out var v)
+                                    && v.Contains(new Vector2(x2 * -1, 0)))
+                                {
+                                    used.Add(e.Key);
+                                    sides++;
+                                }
 
-                        void GetInsideCorner(bool edgeY, bool edgeX, 
-                            List<Vector2> used, int x, int y)
-                        {
-                            Vector2 pos2 = item.Key + new Vector2(x, y);
-                            if (edgeY && !edgeX && !used.Contains(item.Key)
-                                && edges.TryGetValue(pos2, out var value)
-                                && value.Contains(new Vector2(x * -1, 0)))
-                            {
-                                used.Add(item.Key);
-                                sides++;
+                                if (e.Value.Contains(new(x2, 0))
+                                    && e.Value.Contains(new(0, y2)))
+                                        sides++;
                             }
-                        }
-                        // Count corners to get all unique sides
-                        sides += new bool[] {t && r, t && l, b && r, b && l}
-                            .Where(x => x).Count(); // Outside corners
-                        GetInsideCorner(b, r, usedCorners[0], 1, 1);
-                        GetInsideCorner(b, l, usedCorners[1], -1, 1);
-                        GetInsideCorner(t, l, usedCorners[2], -1, -1);
-                        GetInsideCorner(t, r, usedCorners[3], 1, -1);
                     }
 
                     totals[1] += edges.Keys.Count * sides; //Area * sides
