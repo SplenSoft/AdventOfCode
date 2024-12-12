@@ -22,7 +22,7 @@ internal class Day12 : Day
         bool IsOnMap(Vector2 pos) => pos.X >= 0 && pos.Y >= 0 
             && pos.X < lines[0].Length && pos.Y < lines.Length;
 
-        void Path(List<Vector2> plotsSoFar, Vector2 pos, char ch, ref long perim, Dictionary<Vector2, List<Vector2>> edges)
+        void Path(List<Vector2> plotsSoFar, Vector2 pos, char ch, Dictionary<Vector2, List<Vector2>> edges)
         {
             plotsSoFar.Add(pos);
             edges.Add(pos, []);
@@ -34,19 +34,82 @@ internal class Day12 : Day
                     Vector2 next = new Vector2(pos.X + x, pos.Y + y);
                     if (!IsOnMap(next))
                     {
-                        perim++;
                         edges[pos].Add(new Vector2(x, y));
                         continue;
                     }
                     if (plotsSoFar.Contains(next)) continue;
                     if (ch != lines[(int)next.Y][(int)next.X])
                     {
-                        perim++;
                         edges[pos].Add(new Vector2(x, y));
                         continue;
                     }
-                    Path(plotsSoFar, next, ch, ref perim, edges);
+                    Path(plotsSoFar, next, ch, edges);
                 }
+        }
+
+        long GetCorners(Dictionary<Vector2, List<Vector2>> edges)
+        {
+            long outsideCorners = 0;
+            
+            long insideTopRight = 0;
+            long insideBottomRight = 0;
+            long insideTopLeft = 0;
+            long insideBottomLeft = 0;
+            List<Vector2> usedInsideTopRight = [];
+            List<Vector2> usedInsideTopLeft = [];
+            List<Vector2> usedInsideBottomRight = [];
+            List<Vector2> usedInsideBottomLeft = [];
+
+            foreach (var item in edges)
+            {
+                // Outside corners
+                bool rightEdge = item.Value.Contains(new Vector2(1, 0));
+                bool leftEdge = item.Value.Contains(new Vector2(-1, 0));
+                bool topEdge = item.Value.Contains(new Vector2(0, -1));
+                bool bottomEdge = item.Value.Contains(new Vector2(0, 1));
+
+                bool topRight = topEdge && rightEdge;
+                bool topLeft = topEdge && leftEdge;
+                bool bottomRight = bottomEdge && rightEdge;
+                bool bottomLeft = bottomEdge && leftEdge;
+
+                outsideCorners += new List<bool>() { topRight, topLeft, bottomRight, bottomLeft }.Where(x => x).Count();
+
+                Vector2 other = new Vector2(item.Key.X + 1, item.Key.Y + 1);
+                if (bottomEdge && !rightEdge && !usedInsideTopRight.Contains(item.Key) 
+                    && edges.TryGetValue(other, out var value) && value.Contains(new Vector2(-1, 0)))
+                { // Are we a Top square that needs a bottom right?
+                    usedInsideTopRight.Add(item.Key);
+                    insideTopRight++;
+                }
+
+                
+                other = new Vector2(item.Key.X - 1, item.Key.Y + 1);
+                if (bottomEdge && !leftEdge && !usedInsideTopLeft.Contains(item.Key) 
+                    && edges.TryGetValue(other, out value) && value.Contains(new Vector2(1, 0)))
+                { // Are we a Top square that needs a bottom left?
+                    usedInsideTopLeft.Add(item.Key);
+                    insideTopLeft++;
+                }
+
+                other = new Vector2(item.Key.X - 1, item.Key.Y - 1);
+                if (topEdge && !leftEdge && !usedInsideBottomLeft.Contains(item.Key) 
+                    && edges.TryGetValue(other, out value) && value.Contains(new Vector2(1, 0)))
+                { // Are we a Bottom square that needs a top left?
+                    usedInsideBottomLeft.Add(item.Key);
+                    insideBottomLeft++;
+                }
+
+                other = new Vector2(item.Key.X + 1, item.Key.Y - 1);
+                if (topEdge && !rightEdge && !usedInsideBottomRight.Contains(item.Key) 
+                    && edges.TryGetValue(other, out value) && value.Contains(new Vector2(-1, 0)))
+                { // Are we a Bottom square that needs a top right?
+                    usedInsideBottomRight.Add(item.Key);
+                    insideBottomRight++;
+                }
+            }
+
+            return outsideCorners + insideBottomRight + insideBottomLeft + insideTopLeft + insideTopRight;
         }
 
         for (int y = 0; y < lines.Length; y++) 
@@ -58,12 +121,14 @@ internal class Day12 : Day
                 {
                     Dictionary<Vector2, List<Vector2>> edges = [];
                     List<Vector2> used = [];
-                    long perim = 0;
                     char ch = lines[y][x];
-                    Path(used, tile, ch, ref perim, edges);
+                    Path(used, tile, ch, edges);
                     usedPlots.AddRange(used);
-                    Console.WriteLine($"{ch}: A = {used.Count}, P = {perim}");
+                    long perim = edges.Values.Select(e => e.Count).Sum();
                     totals[0] += (used.Count * perim);
+                    var edges2 = edges.Keys.Where(x => edges[x].Count > 0).ToList();
+                    long sides = GetCorners(edges);
+                    totals[1] += (used.Count * sides);
                 }
             }
         }
