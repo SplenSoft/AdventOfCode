@@ -15,68 +15,41 @@ internal class Day11 : Day
 {
     public override async Task Solve(string input, long[] totals)
     {
-        Stack<(long, int)> stones = [];
-
-        //int max = 10000;
-        //int maxStones = max * Environment.ProcessorCount;
-        //List<(long, int)[]> retrievedStones = new(Environment.ProcessorCount);
-        //List<Action> tasks = [];
-        //int iterations = 0;
-        //int tasksRunning = 0;
-        //for (int a = 0; a < Environment.ProcessorCount; a++)
-        //    retrievedStones.Add(new (long, int)[max]);
-
-        int tasksRunning = 1;
-
-        var task = Task.Run(async () =>
+        int part = 0;
+        foreach (int max in new List<int> { 25, 75 })
         {
-            while (tasksRunning > 0)
-            {
-                await Task.Delay(1000);
-                Console.WriteLine($"Stones count: {stones.Count}. Totals: {string.Join(", ", totals)} in {Time.Elapsed}");
-            }
-        });
-
-        input.Split(' ').Select(x => (long.Parse(x), 0)).ToList().ForEach(x => 
-        { 
+            Dictionary<long, long> stones = [];
+            long total = 0;
+            input.Split(' ').Select(long.Parse).ToList()
+                .ForEach(x => Process(x, 1, ref total));
             
-        });
-
-        async void Process((long, int) stoneItem)
-        {
-            while (tasksRunning >= 16) await Task.Yield();
-            tasksRunning++;
-            if (stoneItem.Item2 == 25)
+            void Process(long stoneNum, long toAdd, ref long total)
             {
-                totals[0]++;
-                tasksRunning--;
-                return;
-            }
-            else if (stoneItem.Item2 == 75)
-            {
-                totals[1]++;
-                tasksRunning--;
-                return;
+                stones.TryGetValue(stoneNum, out long amt);
+                stones[stoneNum] = amt + toAdd;
+                total += toAdd;
             }
 
-            long num = stoneItem.Item1;
-            int i = stoneItem.Item2 + 1; // Blink count
-            if (num == 0) Process((1, i));
-            else if (Math.Floor(Math.Log10(num) + 1) % 2 == 0)
-            { // Number of digits is even, split stone
-                int digits = (int)Math.Floor(Math.Log10(num) + 1);
-                long tens = (long)Math.Pow(10, digits / 2);
-                long right = num % tens;
-                long left = (num - right) / tens;
-                Process((left, i));
-                Process((right, i));
+            for (int blink = 1; blink <= max; blink++)
+            {
+                total = 0;
+                var list = stones.ToList();
+                stones.Clear();
+                foreach (var stone in list)
+                    if (stone.Key == 0) Process(1, stone.Value, ref total);
+                    else if (Math.Floor(Math.Log10(stone.Key) + 1) % 2 == 0)
+                    {
+                        long tens = (long)Math.Pow(10, 
+                            (int)Math.Floor(Math.Log10(stone.Key) + 1) / 2);
+                        var left = stone.Key / tens;
+                        var right = stone.Key % tens;
+                        Process(left, stone.Value, ref total);
+                        Process(right, stone.Value, ref total);
+                    }
+                    else Process(stone.Key * 2024, stone.Value, ref total);
             }
-            else Process((num * 2024, i));
+            totals[part++] = total;
         }
-
-        tasksRunning--;
-        //Parallel.Invoke([.. tasks]);
-        //Console.WriteLine($"Completed parallel process {++iterations}. " +
-        //    $"Stones count: {stones.Count}. Totals: {string.Join(", ",totals)} in {Time.Elapsed}");
     }
 }
+
