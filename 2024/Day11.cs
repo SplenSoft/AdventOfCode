@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCode._2024;
+﻿namespace AdventOfCode._2024;
 
 /// <summary>
 /// <see href="https://adventofcode.com/2024/day/11"/>
@@ -38,7 +31,7 @@ internal class Day11 : Day
                 foreach (var stone in list)
                     if (stone.Key == 0) Process(1, stone.Value, ref total);
                     else if (Math.Floor(Math.Log10(stone.Key) + 1) % 2 == 0)
-                    {
+                    {   // If digits are an even number, split the number
                         long tens = (long)Math.Pow(10, 
                             (int)Math.Floor(Math.Log10(stone.Key) + 1) / 2);
                         var left = stone.Key / tens;
