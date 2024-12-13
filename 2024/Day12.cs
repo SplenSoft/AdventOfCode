@@ -27,15 +27,11 @@ internal class Day12 : Day
                             {   // Gather edge data and move to next tile
                                 if (x != 0 && y != 0) continue; // No diagonal
                                 Vector2 n = pos + new Vector2(x, y);
-                                if (n.X < 0 || n.X >= lines[0].Length 
-                                    || n.Y >= lines.Length || n.Y < 0)
-                                {   // Next pos is off the map
-                                    edges[pos].Add(new Vector2(x, y));
-                                    continue;
-                                }
                                 if (edges.ContainsKey(n)) continue;
-                                if (ch != lines[(int)n.Y][(int)n.X])
-                                {   // Next pos is not same character
+                                if (n.X < 0 || n.X >= lines[0].Length 
+                                    || n.Y >= lines.Length || n.Y < 0 
+                                    || ch != lines[(int)n.Y][(int)n.X])
+                                {   // Next pos is off the map or not ch
                                     edges[pos].Add(new Vector2(x, y));
                                     continue;
                                 }
