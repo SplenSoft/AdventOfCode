@@ -37,4 +37,15 @@ internal class Day13 : Day
                 totals[j] += (long)x * 3 + (long)y;
             }
     }
+
+    // Some algebraic notes for posterity.
+    //x * a1 + y * b1 = p1
+    //x * a1 = p1 - y * b1
+    //x = (p1 - y * b1) / a1
+
+    //x * a2 + y * b2 = p2
+    //y * b2 = p2 - x * a2
+    //y = (p2 - x * a2) / b2
+
+    //p2 = (p1 - y * b1) / a1 * a2 + y * b2
 }
