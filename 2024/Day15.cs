@@ -12,7 +12,7 @@ namespace AdventOfCode._2024;
 /// </summary>
 [Day(2024, 15)]
 internal class Day15 : Day
-{   //89
+{   //84
     public override async Task Solve(string input, long[] totals)
     {
         int p = 0;
@@ -48,15 +48,14 @@ internal class Day15 : Day
             return key != null;
         }
 
-        bool TryMoveAllObjects(Vector2 dir, List<Vector2> obj, 
-            List<List<Vector2>> all)
+        bool Move(Vector2 dir, List<Vector2> obj, List<List<Vector2>> all)
         {
             all.Add(obj);
             foreach (var item in obj)
                 if (TryGetOccupied(item + dir, out var objs))
                     if (all.Contains(objs)) continue;
                     else if (obs[objs] == '#') return false;
-                    else if (!TryMoveAllObjects(dir, objs, all)) return false;
+                    else if (!Move(dir, objs, all)) return false;
             return true;
         }
 
@@ -64,21 +63,17 @@ internal class Day15 : Day
             for (int x = 0; x < lines[y].Length; x++)
             {
                 var dir = directions[lines[y][x]];
+                List<List<Vector2>> allObjs = [];
 
                 if (!TryGetOccupied(robot + dir, out List<Vector2>? key))
-                {   // Nothing is in the way, move the robot
-                    robot += dir;
-                    continue;
-                }
-
-                if (obs[key] == '#') continue;
-                List<List<Vector2>> allObjs = [];
-                if (TryMoveAllObjects(dir, key, allObjs))
-                {
+                    robot += dir; // Nothing is in the way, move the robot
+                else if (obs[key] == '#') continue;
+                else if (Move(dir, key, allObjs))
+                {   // Move boxes and robot
                     robot += dir;
                     foreach (var item in allObjs) obs.Remove(item);
-                    allObjs = [.. allObjs.Select(x => x
-                    .Select(y => y + dir).ToList())];
+                    allObjs = [.. allObjs.Select(x => x 
+                        .Select(y => y + dir).ToList())]; 
                     foreach (var item in allObjs) obs[item] = 'O';
                 }
             }
