@@ -12,37 +12,36 @@ namespace AdventOfCode._2024;
 /// </summary>
 [Day(2024, 15)]
 internal class Day15 : Day
-{   //82
+{   
     public override async Task Solve(string input, long[] totals)
     {
         int p = 0;
         string[] lines = input.Split(Environment.NewLine);
-        Dictionary<char, Vector2> directions = new() { {'^', new(0, -1) },  
+        Dictionary<char, Vector2> dirs = new() { {'^', new(0, -1) },  
             {'>', new(1, 0) }, {'v', new(0, 1) },  {'<', new(-1,0) }};
         Start:
-        Vector2 robot = Vector2.Zero;
-        Dictionary<List<Vector2>, char> obs = [];
-        int y = 0;
+        Vector2 bot = Vector2.Zero;
+        Dictionary<List<Vector2>, char> obs = []; // Boxes and walls
+        int y = 0; // Separated so we can identify/skip the empty line
 
         for (; y < lines.Length; y++)
         {
             if (string.IsNullOrEmpty(lines[y])) break;
             string line = p == 1 ? "" : lines[y];
-            if (p > 0) // Part 2
-                for (int x = 0; x < lines[y].Length; x++)
-                    if (lines[y][x] == '#') line += "##";
-                    else if (lines[y][x] == 'O') line += "[]";
-                    else if (lines[y][x] == '.') line += "..";
-                    else if (lines[y][x] == '@') line += "@.";
+            for (int x = 0; x < lines[y].Length; x++) // Part 2 only
+                if (p > 0 && lines[y][x] == '#') line += "##";
+                else if (p > 0 && lines[y][x] == 'O') line += "[]";
+                else if (p > 0 && lines[y][x] == '.') line += "..";
+                else if (p > 0 && lines[y][x] == '@') line += "@.";
 
             for (int x = 0; x < line.Length; x++)
                 if (line[x] == '[') obs[[new(x, y), new(x + 1, y)]] = 'O';
-                else if (line[x] == '@') robot = new(x, y);
-                else if (line[x] == 'O') obs[[new(x, y)]] = 'O';
+                else if (line[x] == '@') bot = new(x, y);
+                else if (line[x] == 'O') obs[[new(x, y)]] = 'O'; // Part 1
                 else if (line[x] == '#') obs[[new(x, y)]] = '#';
         }
 
-        bool TryGetOccupied(Vector2 tile, out List<Vector2>? key)
+        bool GetObj(Vector2 tile, out List<Vector2>? key)
         {
             key = obs.Keys.FirstOrDefault(x => x.Contains(tile));
             return key != null;
@@ -52,7 +51,7 @@ internal class Day15 : Day
         {
             all.Add(obj);
             foreach (var item in obj)
-                if (TryGetOccupied(item + dir, out var objs))
+                if (GetObj(item + dir, out List<Vector2>? objs))
                     if (all.Contains(objs)) continue;
                     else if (obs[objs] == '#') return false;
                     else if (!Move(dir, objs, all)) return false;
@@ -60,19 +59,16 @@ internal class Day15 : Day
         }
 
         for (++y; y < lines.Length; y++) // Iterate robot directions
-            for (int x = 0; x < lines[y].Length; x++)
+            foreach (var ch in lines[y])
             {
-                var dir = directions[lines[y][x]];
                 List<List<Vector2>> all = [];
-
-                if (!TryGetOccupied(robot + dir, out List<Vector2>? key))
-                    robot += dir; // Nothing is in the way, move the robot
-                else if (obs[key] != '#' && Move(dir, key, all))
-                {   // Move boxes and robot if there's space
-                    robot += dir;
+                if (!GetObj(bot + dirs[ch], out List<Vector2>? objs) 
+                    || (obs[objs] != '#' && Move(dirs[ch], objs, all)))
+                {   
+                    bot += dirs[ch]; // Move the robot
                     obs = obs.Select(x => all.Contains(x.Key) ? KeyValuePair
-                        .Create(x.Key.Select(y => y + dir).ToList(), x.Value) 
-                        : x).ToDictionary();
+                        .Create(x.Key.Select(y => y + dirs[ch])
+                        .ToList(), x.Value) : x).ToDictionary(); // Move boxes
                 }
             }
 
