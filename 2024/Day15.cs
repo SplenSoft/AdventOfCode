@@ -12,7 +12,7 @@ namespace AdventOfCode._2024;
 /// </summary>
 [Day(2024, 15)]
 internal class Day15 : Day
-{   //84
+{   //82
     public override async Task Solve(string input, long[] totals)
     {
         int p = 0;
@@ -63,23 +63,21 @@ internal class Day15 : Day
             for (int x = 0; x < lines[y].Length; x++)
             {
                 var dir = directions[lines[y][x]];
-                List<List<Vector2>> allObjs = [];
+                List<List<Vector2>> all = [];
 
                 if (!TryGetOccupied(robot + dir, out List<Vector2>? key))
                     robot += dir; // Nothing is in the way, move the robot
-                else if (obs[key] == '#') continue;
-                else if (Move(dir, key, allObjs))
-                {   // Move boxes and robot
+                else if (obs[key] != '#' && Move(dir, key, all))
+                {   // Move boxes and robot if there's space
                     robot += dir;
-                    foreach (var item in allObjs) obs.Remove(item);
-                    allObjs = [.. allObjs.Select(x => x 
-                        .Select(y => y + dir).ToList())]; 
-                    foreach (var item in allObjs) obs[item] = 'O';
+                    obs = obs.Select(x => all.Contains(x.Key) ? KeyValuePair
+                        .Create(x.Key.Select(y => y + dir).ToList(), x.Value) 
+                        : x).ToDictionary();
                 }
             }
 
-        totals[p++] = (long)obs.Where(x => x.Value == 'O')
+        totals[p++] = (long)obs.Where(x => x.Value == 'O') // Weird scoring
             .Select(x => x.Key[0].X + (100 * x.Key[0].Y)).Sum();
-        if (p == 2) return; else goto Start;
+        if (p == 2) return; else goto Start; // Go do part 2 or end
     }
 }
