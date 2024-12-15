@@ -11,11 +11,11 @@ internal class Day14 : Day
 {
     public override async Task Solve(string input, long[] totals)
     {
-        int w = 101, h = 103;
+        int w /*width of map*/ = 101, h /*height of map*/ = 103;
         var regex = new Regex(@"p=(\d+),(\d+)\sv=(-?\d+),(-?\d+)");
-        List<(Vector2 p, Vector2 v)> bots = [];
+        List<(Vector2 p/*position*/, Vector2 v/*velocity*/)> bots = [];
         string[] lines = input.Split(Environment.NewLine);
-        List<float> distances = [];
+        List<float> distances = []; // Used for part 2 only
         bool foundTree = false;
 
         for (int i = 0; i < lines.Length; i++)
@@ -29,20 +29,20 @@ internal class Day14 : Day
         {   // Loop forever until we meet our conditions
             if (foundTree && totals[0] > 0) break; // Our conditions
 
-            distances.Clear(); // Get average distance between bots
+            distances.Clear(); // Get average distance between bots (part 2)
             for (int j = 0; j < bots.Count; j++)
                 for (int k = 0; k < bots.Count; k++)
                     if (j != k)
                         distances.Add(Vector2.Distance(bots[j].p, bots[k].p));
 
-            if (!foundTree && distances.Average() < 32)
+            if (!foundTree && distances.Average() < 32) // Solve part 2
             {// From testing, lower than 32 avg means they're in tree form
                 totals[1] = i; // This is dumb and I hate it.
                 foundTree = true;
             }
 
             for (int j = 0; j < bots.Count; j++) 
-            {   // Patrol the bots
+            {   // Patrol the bots (parts 1 and 2)
                 var r = bots[j];
                 Vector2 p = r.p;
                 p = new(p.X + r.v.X, p.Y + r.v.Y);
