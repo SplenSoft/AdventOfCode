@@ -27,11 +27,12 @@ internal class Day16 : Day
         List<Vector2> dirs = [new(0, 1), new(0, -1), new(1, 0), new(-1, 0)];
         Vector2 ToEnd(Vector2 pos) => end - pos;
         long totalMoves = 0;
-        List<Vector2> allTiles = [];
-        List<(int, Action)> actions = [];
-        Dictionary<Vector2, List<List<Vector2>>> pathsFromTileToEnd = [];
-        Dictionary<Vector2, Dictionary<Vector2, List<List<Vector2>>>> pathsFromTileToTile = [];
-        List<List<Vector2>> unfinishedPaths = [];
+        HashSet<Vector2> allTiles = [];
+        List<Action> actions0 = [];
+        List<Action> actions1 = [];
+        Stack<Action> actions2 = [];
+        Stack<Action> actions3 = [];
+        long totalKilled = 0;
 
         for (int y = 0; y < lines.Length; y++) 
         { 
@@ -52,188 +53,147 @@ internal class Day16 : Day
         double Angle(Vector2 v, Vector2 u) => Math.Acos(Vector2.Dot(v, u) 
             / (v.Length() * u.Length()));
 
-        void Path(Vector2 pos, List<Vector2> path)
+        void Path(Vector2 pos, List<Vector2> path, Vector2 dir, long score, bool useAllTiles)
         {
-
             totalMoves++;
-            if (totalMoves % 4 == 0) Draw();
-            foreach (var direction in GetSortedDirs(pos))
+            //if (totalMoves % 100000 == 0) Draw();
+            if (score > lowestScore)
+            {
+                totalKilled++;
+                return;
+            }
+
+            //foreach (var direction in GetSortedDirs(pos))
+            foreach (var direction in dirs)
             {
                 Vector2 next = pos + direction;
-                if (!walls.Contains(next) && !path.Contains(next))
+                if (!walls.Contains(next) && !path.Contains(next) && !allTiles.Contains(next))
                 {
-                    
+                    //if (useAllTiles && allTiles.Contains(next)) continue;
                     List<Vector2> newPath = [.. path, next];
-                    if (allTiles.Contains(next))
+
+                    long newScore = GetScoreBetweenTiles(path.Last(), next, dir, out var newDir) + 1;
+
+                    if (newScore + score > lowestScore)
                     {
-                        unfinishedPaths.Add(newPath);
-                        GenerateShortcuts(newPath);  
+                        //Console.WriteLine("killed!");
+                        totalKilled++;
                         continue;
                     }
+
                     if (next == end)
                     {
-                        foreach (var tile in path)
+                        if (newScore + score < lowestScore)
                         {
-                            if (!pathsFromTileToEnd.ContainsKey(tile))
-                            {
-                                pathsFromTileToEnd[tile] = [];
-                            }
-
-                            int index = path.IndexOf(tile);
-
-                            pathsFromTileToEnd[tile].Add(newPath.Skip(index).ToList());
+                            lowestScore = newScore + score;
+                            Console.Write($"\rLowest = {lowestScore}. Killed = {totalKilled}");
                         }
-                        GenerateShortcuts(newPath);
+                        allTiles.Clear();
                         continue;
                     }
-                    allTiles.Add(next);
-                    Path(next, newPath);
+
+                    Action action = () => Path(next, newPath, newDir, newScore + score, useAllTiles);
+
+                    //if (allTiles.Add(next))
+                    //{
+                    //    //action.Invoke();
+                    //    actions1.Insert(0,action);
+                    //}
+                    /*else */if (newScore < 1000)
+                    {
+                        //actions1.Add(action);
+                        actions1.Insert(0, action);
+                    }
+                    else if (newScore < 2000)
+                    {
+                        actions2.Push(action);
+                    }
+                    else
+                    {
+                        actions3.Push(action);
+                    }
+
+                    //Path(next, newPath, newDir, newScore + score, useAllTiles);
                 }
             }
-        }
-
-        void GenerateShortcuts(List<Vector2> path)
-        {
-            foreach (var tile in path)
-                foreach (var tile2 in path)
-                {
-                    if (tile == tile2) continue;
-                    int index1 = path.IndexOf(tile);
-                    int index2 = path.IndexOf(tile2);
-
-                    if (index1 > index2) continue;
-
-                    if (!pathsFromTileToTile.ContainsKey(tile))
-                        pathsFromTileToTile[tile] = [];
-
-                    if (!pathsFromTileToTile[tile].ContainsKey(tile2))
-                        pathsFromTileToTile[tile][tile2] = [];
-
-                    if (!pathsFromTileToTile.ContainsKey(tile2))
-                        pathsFromTileToTile[tile2] = [];
-
-                    if (!pathsFromTileToTile[tile2].ContainsKey(tile))
-                        pathsFromTileToTile[tile2][tile] = [];
-
-                    var snip = path.Skip(index1).Take((index2 - index1) + 1);
-
-                    pathsFromTileToTile[tile][tile2].Add(snip.ToList());
-                    pathsFromTileToTile[tile2][tile].Add(snip.Reverse().ToList());
-                }
-                    
+            allTiles.Add(pos);
         }
 
         void Draw()
         {
-            //Console.Clear();
-            //for (int y = 0; y < lines.Length; y++)
-            //{
-            //    string line = "";
-            //    for (int x = 0; x < lines[y].Length; x++)
-            //    {
-            //        if (walls.Contains(new(x, y))) line += "#";
-            //        else if (start == new Vector2(x, y)) line += "S";
-            //        else if (end == new Vector2(x, y)) line += "E";
-            //        else if (allTiles.Contains(new(x, y))) line += "X";
-            //        else line += " ";
-            //    }
-            //    Console.WriteLine(line);
-            //}
-            //Console.ReadLine();
+            Console.Clear();
+            for (int y = 0; y < lines.Length; y++)
+            {
+                string line = "";
+                for (int x = 0; x < lines[y].Length; x++)
+                {
+                    if (walls.Contains(new(x, y))) line += "#";
+                    else if (start == new Vector2(x, y)) line += "S";
+                    else if (end == new Vector2(x, y)) line += "E";
+                    else if (allTiles.Contains(new(x, y))) line += "X";
+                    else line += " ";
+                }
+                Console.WriteLine(line);
+            }
+            Console.ReadLine();
         }
 
-        Path(start, [start]);
+        Path(start, [start], new Vector2(1, 0), 0, true);
 
-        //while (unfinishedPaths.Count > 0) 
-        //{
-        //    bool foundAtLeast1 = false;
-        //    foreach (var unfinishedPath in unfinishedPaths)
-        //    {
-        //        if (pathsFromTileToEnd.ContainsKey(unfinishedPath.Last()))
-        //        {
-        //            foreach (var item1 in pathsFromTileToEnd[unfinishedPath.Last()])
-        //            {
-        //                foreach (var tile in unfinishedPath)
-        //                {
-        //                    int index = unfinishedPath.IndexOf(tile);
-
-        //                    if (!pathsFromTileToEnd.ContainsKey(tile))
-        //                    {
-        //                        pathsFromTileToEnd[tile] = [];
-        //                    }
-
-        //                    pathsFromTileToEnd[tile].Add(unfinishedPath.Skip(index).Concat(item1).ToList());
-        //                }
-        //            }
-        //            unfinishedPaths.Remove(unfinishedPath);
-        //            foundAtLeast1 = true;   
-        //            break;
-        //        }
-        //    }
-        //    if (!foundAtLeast1) break;
-        //}
-
-        //foreach (var item in pathsFromTileToEnd.Keys)
-        //{
-        //    pathsFromTileToEnd[item] = pathsFromTileToEnd[item].OrderBy(GetScore).Take(1).ToList();
-        //    //pathsFromTileToEnd[item] = pathsFromTileToEnd[item].Distinct().ToList();
-        //}
-
-        // Shorten paths
-        List<List<Vector2>> finalPaths = [];
-        long shortcutsFound = 0;
-        long shortcutsExamined = 0;
-        List<List<Vector2>> pathToUse = pathsFromTileToEnd[start].ToList();
-        Short:
-        finalPaths.Clear();
-        bool goAgain = false;
-        foreach (var item in pathToUse)
+        while (actions1.Count > 0 ||  actions2.Count > 0 || actions3.Count > 0)
         {
-            List<Vector2> newPath = new List<Vector2>(item);
-            Loop:
-            for (int j = 0; j < newPath.Count - 1; j++)
+            while (actions1.Count > 0)
             {
-                var tile1 = newPath[j];
-                if (!pathsFromTileToTile.ContainsKey(tile1)) continue;
-                if (tile1 == end) continue;
-
-                for (int i = newPath.Count - 1; i >= 0; i--)
-                {
-                    var tile2 = newPath[i];
-                    if (tile1 == tile2) continue;
-                    if (!pathsFromTileToTile[tile1].ContainsKey(tile2)) continue;
-                    shortcutsExamined++;
-                    // Does a shortcut exist?
-                    int index1 = j;
-                    int index2 = i;
-                    if (index1 > index2) continue;
-
-                    var currentPath = newPath.Skip(index1).Take((index2 - index1) + 1);
-                    Vector2 dir = j == 0 ? new Vector2(1, 0) : newPath[j - 1] - tile1;
-                    long score = GetScore(currentPath.ToList(), dir);
-
-                    var shortcut = pathsFromTileToTile[tile1][tile2]
-                        .OrderBy(x => GetScore(x, dir)).First();
-
-                    if (GetScore(shortcut, dir) < score)
-                    {
-                        newPath = newPath.Take(j).Concat(shortcut)
-                            .Concat(newPath.Skip(i + 1)).ToList();
-
-                        shortcutsFound++;
-                        goAgain = true;
-                        goto Loop;
-                    }
-                }
+                var todo = actions1.First();
+                actions1.RemoveAt(0);
+                todo.Invoke();
             }
 
-            finalPaths.Add(newPath);
+            while (actions2.Count > 0)
+            {
+                var todo = actions2.Pop();
+                todo.Invoke();
+                if (actions1.Count > 0) break;
+            }
+
+            while (actions3.Count > 0)
+            {
+                var todo = actions3.Pop();
+                todo.Invoke();
+                if (actions1.Count > 0 || actions2.Count > 0) break;
+            }
         }
 
-        if (goAgain)
+        //Console.WriteLine($"First pathing finished in {Time.Elapsed} with lowest = {lowestScore}");
+        //Path(start, [start], new Vector2(1, 0), 0, false);
+
+        //while (actions1.Count > 0)
+        //{
+        //    var sorted = actions1.Where(x => x.Item1 < lowestScore).OrderBy(x => x.Item1).ToList();
+        //    if (sorted.Count == 0) break;
+        //    var todo = sorted.First().Item2;
+        //    actions1 = sorted.Skip(1).ToList();
+        //    todo.Invoke();
+        //}
+
+        long GetScoreBetweenTiles(Vector2 current, Vector2 next, Vector2 dir, out Vector2 newDir)
         {
-            pathToUse = finalPaths.ToList();
-            goto Short;
+            long score = 0;
+            Vector2 pathDir = next - current;
+            Vector2 combo = pathDir + dir;
+
+            if (combo == Vector2.Zero)
+            {
+                score += 2000;
+            }
+            else if (combo.X != 0 && combo.Y != 0)
+            {
+                score += 1000;
+            }
+
+            newDir = pathDir;
+
+            return score;
         }
 
         long GetScore(List<Vector2> path, Vector2 dir)
@@ -244,26 +204,14 @@ internal class Day16 : Day
             {
                 Vector2 current = path[i];
                 Vector2 next = path[i + 1];
-                Vector2 pathDir = next - current;
-                Vector2 combo = pathDir + dir;
-
-                if (combo == Vector2.Zero)
-                {
-                    score += 2000;
-                }
-                else if (combo.X != 0 && combo.Y != 0)
-                {
-                    score += 1000;
-                }
-
-                dir = pathDir;
+                score += GetScoreBetweenTiles(current, next, dir, out dir);
             }
             
             return score;
         }
 
-        totals[0] = finalPaths.Select(x => GetScore(x, new (1, 0))).Order().First();
-        Console.WriteLine($"Total moves: {totalMoves}");
-        Console.WriteLine($"Total shortcuts: {shortcutsFound} / {shortcutsExamined}");
+        //totals[0] = finalPaths.Select(x => GetScore(x, new (1, 0))).Order().First();
+        totals[0] = lowestScore;
+        Console.WriteLine($"\nTotal moves: {totalMoves}");
     }
 }
