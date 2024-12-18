@@ -28,10 +28,13 @@ internal class Day16 : Day
         Vector2 ToEnd(Vector2 pos) => end - pos;
         long totalMoves = 0;
         HashSet<Vector2> allTiles = [];
+        List<Vector2> bestPathTiles = [];
+        List<List<Vector2>> bestPaths = [];
         List<Action> actions0 = [];
         List<Action> actions1 = [];
         Stack<Action> actions2 = [];
         Stack<Action> actions3 = [];
+        Dictionary<Vector2, long> scoreAtTile = new Dictionary<Vector2, long>();
         long totalKilled = 0;
 
         for (int y = 0; y < lines.Length; y++) 
@@ -67,7 +70,7 @@ internal class Day16 : Day
             foreach (var direction in dirs)
             {
                 Vector2 next = pos + direction;
-                if (!walls.Contains(next) && !path.Contains(next) && !allTiles.Contains(next))
+                if (!walls.Contains(next) && !path.Contains(next))
                 {
                     //if (useAllTiles && allTiles.Contains(next)) continue;
                     List<Vector2> newPath = [.. path, next];
@@ -81,42 +84,40 @@ internal class Day16 : Day
                         continue;
                     }
 
+                    if (scoreAtTile.TryGetValue(next, out long tileScore))
+                    {
+                        if (newScore + score > tileScore) continue;
+                    }
+
+                    scoreAtTile[next] = newScore + score;
+
                     if (next == end)
                     {
-                        if (newScore + score < lowestScore)
+                        if (newScore + score <= lowestScore)
                         {
                             lowestScore = newScore + score;
                             Console.Write($"\rLowest = {lowestScore}. Killed = {totalKilled}");
                         }
-                        allTiles.Clear();
+                        bestPaths.Add(newPath);
                         continue;
                     }
 
                     Action action = () => Path(next, newPath, newDir, newScore + score, useAllTiles);
-
-                    //if (allTiles.Add(next))
+                    actions1.Add(action);
+                    //if (newScore < 1000)
                     //{
-                    //    //action.Invoke();
-                    //    actions1.Insert(0,action);
+                    //    actions1.Insert(0, action);
                     //}
-                    /*else */if (newScore < 1000)
-                    {
-                        //actions1.Add(action);
-                        actions1.Insert(0, action);
-                    }
-                    else if (newScore < 2000)
-                    {
-                        actions2.Push(action);
-                    }
-                    else
-                    {
-                        actions3.Push(action);
-                    }
-
-                    //Path(next, newPath, newDir, newScore + score, useAllTiles);
+                    //else if (newScore < 2000)
+                    //{
+                    //    actions2.Push(action);
+                    //}
+                    //else
+                    //{
+                    //    actions3.Push(action);
+                    //}
                 }
             }
-            allTiles.Add(pos);
         }
 
         void Draw()
@@ -130,7 +131,8 @@ internal class Day16 : Day
                     if (walls.Contains(new(x, y))) line += "#";
                     else if (start == new Vector2(x, y)) line += "S";
                     else if (end == new Vector2(x, y)) line += "E";
-                    else if (allTiles.Contains(new(x, y))) line += "X";
+                    else if (bestPathTiles.Contains(new Vector2(x, y))) line += "O";
+                    //else if (allTiles.Contains(new(x, y))) line += "X";
                     else line += " ";
                 }
                 Console.WriteLine(line);
@@ -210,8 +212,13 @@ internal class Day16 : Day
             return score;
         }
 
+
+        bestPathTiles = bestPaths.Where(x => GetScore(x, new(1, 0)) == lowestScore).SelectMany(x => x).Distinct().ToList();
+        Draw();
+
         //totals[0] = finalPaths.Select(x => GetScore(x, new (1, 0))).Order().First();
         totals[0] = lowestScore;
+        totals[1] = bestPathTiles.Count();
         Console.WriteLine($"\nTotal moves: {totalMoves}");
     }
 }
