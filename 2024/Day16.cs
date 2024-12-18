@@ -26,7 +26,7 @@ internal class Day16 : Day
         List<Vector2> bestPath = [];
         List<Vector2> dirs = [new(0, 1), new(0, -1), new(1, 0), new(-1, 0)];
         List<(long, List<Vector2>)> bestPaths = [];
-        List<Action> actions1 = [];
+        Stack<Action> actions1 = [];
         Dictionary<Vector2, long> scoreAtTile = [];
 
         for (int y = 0; y < lines.Length; y++) 
@@ -67,7 +67,7 @@ internal class Day16 : Day
                     continue;
                 }
 
-                actions1.Add(() => Path(next, [.. path, next], newDir, newScore + score, shuffle, ending));
+                actions1.Push(() => Path(next, [.. path, next], newDir, newScore + score, shuffle, ending));
             }
         }
 
@@ -77,19 +77,12 @@ internal class Day16 : Day
             {
                 scoreAtTile.Clear();
                 Path(pos, soFar, dir, score, y, ending);
-
-                while (actions1.Count > 0)
-                {
-                    var todo = actions1.First();
-                    actions1.RemoveAt(0);
-                    todo.Invoke();
-                }
+                while (actions1.Count > 0) actions1.Pop().Invoke();
             }
         }
 
         DoPath(start, [start], new Vector2(1, 0), 0, end);
         DoPath(end, [end], new Vector2(1, 0), 0, start);
-
 
         totals[0] = lowestScore;
         totals[1] = bestPaths.Where(x => x.Item1 == lowestScore).SelectMany(x => x.Item2).Distinct().Count();
