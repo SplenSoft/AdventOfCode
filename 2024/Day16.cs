@@ -37,53 +37,50 @@ internal class Day16 : Day
                 if (lines[y][x] == 'S') start = new Vector2(x, y);
             }
 
-        void Path(Vector2 pos, List<Vector2> path, Vector2 dir, long score, int shuffle, Vector2 ending)
+        void Path(List<Vector2> path, Vector2 dir, long score, int i, Vector2 dest)
         {
             if (score > lowestScore) return;
 
             //foreach (var direction in GetSortedDirs(pos))
-            foreach (var direction in dirs.Skip(shuffle).Concat(dirs.Take(shuffle)))
+            foreach (var direction in dirs.Skip(i).Concat(dirs.Take(i)))
             {
-                Vector2 next = pos + direction;
-                if (walls.Contains(next)) continue;
-
-                Vector2 newDir = next - pos;
+                Vector2 next = path.Last() + direction;
+                Vector2 newDir = next - path.Last();
                 Vector2 combo = newDir + dir;
 
                 long newScore = combo == Vector2.Zero ? 2001 
                     : (combo.X != 0 && combo.Y != 0) ? 1001 : 1;
 
-                if (newScore + score > lowestScore  
+                if (newScore + score > lowestScore || walls.Contains(next)
                     || (scoreAtTile.TryGetValue(next, out long tileScore) 
                     && newScore + score > tileScore))
                     continue;
 
                 scoreAtTile[next] = newScore + score;
 
-                if (next == ending)
+                if (next == dest)
                 {
                     lowestScore = Math.Min(lowestScore, newScore + score);
                     bestPaths.Add((newScore + score, [.. path, next]));
                     continue;
                 }
 
-                actions1.Push(() => Path(next, [.. path, next], newDir, newScore + score, shuffle, ending));
+                actions1.Push(() => Path([.. path, next], newDir, newScore + score, i, dest));
             }
         }
 
-        void DoPath(Vector2 pos, List<Vector2> soFar, Vector2 dir, long score, Vector2 ending)
+        void DoPath(List<Vector2> soFar, Vector2 dir, long score, Vector2 ending)
         {
             for (int y = 0; y < 4; y++)
             {
                 scoreAtTile.Clear();
-                Path(pos, soFar, dir, score, y, ending);
+                Path(soFar, dir, score, y, ending);
                 while (actions1.Count > 0) actions1.Pop().Invoke();
             }
         }
 
-        DoPath(start, [start], new Vector2(1, 0), 0, end);
-        DoPath(end, [end], new Vector2(1, 0), 0, start);
-
+        DoPath([start], new Vector2(1, 0), 0, end);
+        DoPath([end], new Vector2(1, 0), 0, start);
         totals[0] = lowestScore;
         totals[1] = bestPaths.Where(x => x.Item1 == lowestScore).SelectMany(x => x.Item2).Distinct().Count();
     }
