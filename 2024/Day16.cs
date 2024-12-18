@@ -19,21 +19,18 @@ internal class Day16 : Day
     public override async Task Solve(string input, long[] totals)
     {
         string[] lines = input.Split(Environment.NewLine);
-        Vector2 start = Vector2.Zero;
-        Vector2 end = Vector2.Zero;
         long lowest = long.MaxValue;
-        HashSet<Vector2> walls = [];
-        List<Vector2> bestPath = [];
         List<Vector2> dirs = [new(0, 1), new(0, -1), new(1, 0), new(-1, 0)];
         List<(long, List<Vector2>)> best = [];
         Stack<Action> actions1 = [];
+        Dictionary<char, HashSet<Vector2>> tiles = new() { { '#', [] }, { '.', [] } };
         Dictionary<Vector2, long> scoreAtTile = [];
 
-        for (int y = 0; y < lines.Length; y++) 
+        for (int y = 0; y < lines.Length; y++)
             for (int x = 0; x < lines[y].Length; x++)
-                if (lines[y][x] == '#') walls.Add(new Vector2(x, y));
-                else if (lines[y][x] == 'E') end = new Vector2(x, y);
-                else if (lines[y][x] == 'S') start = new Vector2(x, y);
+                if (lines[y][x] is '#' or '.') 
+                    tiles[lines[y][x]].Add(new(x, y));
+                else tiles[lines[y][x]] = [new(x, y)];
 
         void Path(List<Vector2> path, Vector2 dir, long score, int i, Vector2 dest)
         {
@@ -47,7 +44,7 @@ internal class Day16 : Day
                 long score2 = score + (combo == Vector2.Zero ? 2001 
                     : (combo.X != 0 && combo.Y != 0) ? 1001 : 1);
 
-                if (score2 > lowest || walls.Contains(next)
+                if (score2 > lowest || tiles['#'].Contains(next)
                     || (scoreAtTile.TryGetValue(next, out long tileScore) 
                     && score2 > tileScore))
                     continue;
@@ -76,8 +73,8 @@ internal class Day16 : Day
             }
         }
 
-        DoPath([start], new Vector2(1, 0), 0, end);
-        DoPath([end], new Vector2(1, 0), 0, start);
+        DoPath([.. tiles['S']], new Vector2(1, 0), 0, tiles['E'].First());
+        DoPath([.. tiles['E']], new Vector2(1, 0), 0, tiles['S'].First());
         totals[0] = lowest;
         totals[1] = best.Where(x => x.Item1 == lowest)
             .SelectMany(x => x.Item2).Distinct().Count();
