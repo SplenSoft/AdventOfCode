@@ -21,51 +21,48 @@ internal class Day16 : Day
         string[] lines = input.Split(Environment.NewLine);
         Vector2 start = Vector2.Zero;
         Vector2 end = Vector2.Zero;
-        long lowestScore = long.MaxValue;
+        long lowest = long.MaxValue;
         HashSet<Vector2> walls = [];
         List<Vector2> bestPath = [];
         List<Vector2> dirs = [new(0, 1), new(0, -1), new(1, 0), new(-1, 0)];
-        List<(long, List<Vector2>)> bestPaths = [];
+        List<(long, List<Vector2>)> best = [];
         Stack<Action> actions1 = [];
         Dictionary<Vector2, long> scoreAtTile = [];
 
         for (int y = 0; y < lines.Length; y++) 
             for (int x = 0; x < lines[y].Length; x++)
-            {
                 if (lines[y][x] == '#') walls.Add(new Vector2(x, y));
-                if (lines[y][x] == 'E') end = new Vector2(x, y);
-                if (lines[y][x] == 'S') start = new Vector2(x, y);
-            }
+                else if (lines[y][x] == 'E') end = new Vector2(x, y);
+                else if (lines[y][x] == 'S') start = new Vector2(x, y);
 
         void Path(List<Vector2> path, Vector2 dir, long score, int i, Vector2 dest)
         {
-            if (score > lowestScore) return;
-
-            //foreach (var direction in GetSortedDirs(pos))
+            if (score > lowest) return;
             foreach (var direction in dirs.Skip(i).Concat(dirs.Take(i)))
             {
                 Vector2 next = path.Last() + direction;
                 Vector2 newDir = next - path.Last();
                 Vector2 combo = newDir + dir;
 
-                long newScore = combo == Vector2.Zero ? 2001 
-                    : (combo.X != 0 && combo.Y != 0) ? 1001 : 1;
+                long score2 = score + (combo == Vector2.Zero ? 2001 
+                    : (combo.X != 0 && combo.Y != 0) ? 1001 : 1);
 
-                if (newScore + score > lowestScore || walls.Contains(next)
+                if (score2 > lowest || walls.Contains(next)
                     || (scoreAtTile.TryGetValue(next, out long tileScore) 
-                    && newScore + score > tileScore))
+                    && score2 > tileScore))
                     continue;
 
-                scoreAtTile[next] = newScore + score;
+                scoreAtTile[next] = score2;
 
                 if (next == dest)
                 {
-                    lowestScore = Math.Min(lowestScore, newScore + score);
-                    bestPaths.Add((newScore + score, [.. path, next]));
+                    lowest = Math.Min(lowest, score2);
+                    best.Add((score2, [.. path, next]));
                     continue;
                 }
 
-                actions1.Push(() => Path([.. path, next], newDir, newScore + score, i, dest));
+                actions1.Push(() => 
+                    Path([.. path, next], newDir, score2, i, dest));
             }
         }
 
@@ -81,7 +78,8 @@ internal class Day16 : Day
 
         DoPath([start], new Vector2(1, 0), 0, end);
         DoPath([end], new Vector2(1, 0), 0, start);
-        totals[0] = lowestScore;
-        totals[1] = bestPaths.Where(x => x.Item1 == lowestScore).SelectMany(x => x.Item2).Distinct().Count();
+        totals[0] = lowest;
+        totals[1] = best.Where(x => x.Item1 == lowest)
+            .SelectMany(x => x.Item2).Distinct().Count();
     }
 }
