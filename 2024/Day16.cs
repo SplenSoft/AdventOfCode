@@ -30,10 +30,7 @@ internal class Day16 : Day
         HashSet<Vector2> allTiles = [];
         List<Vector2> bestPathTiles = [];
         List<List<Vector2>> bestPaths = [];
-        List<Action> actions0 = [];
         List<Action> actions1 = [];
-        Stack<Action> actions2 = [];
-        Stack<Action> actions3 = [];
         Dictionary<Vector2, long> scoreAtTile = new Dictionary<Vector2, long>();
         long totalKilled = 0;
 
@@ -56,7 +53,7 @@ internal class Day16 : Day
         double Angle(Vector2 v, Vector2 u) => Math.Acos(Vector2.Dot(v, u) 
             / (v.Length() * u.Length()));
 
-        void Path(Vector2 pos, List<Vector2> path, Vector2 dir, long score, bool useAllTiles)
+        void Path(Vector2 pos, List<Vector2> path, Vector2 dir, long score, int shuffle, Vector2 ending)
         {
             totalMoves++;
             //if (totalMoves % 100000 == 0) Draw();
@@ -67,13 +64,18 @@ internal class Day16 : Day
             }
 
             //foreach (var direction in GetSortedDirs(pos))
-            foreach (var direction in dirs)
+            foreach (var direction in dirs.Skip(shuffle).Concat(dirs.Take(shuffle)))
             {
                 Vector2 next = pos + direction;
-                if (!walls.Contains(next) && !path.Contains(next))
+                if (!walls.Contains(next))
                 {
                     //if (useAllTiles && allTiles.Contains(next)) continue;
                     List<Vector2> newPath = [.. path, next];
+
+                    if (path.Last() == new Vector2(11, 3))
+                    {
+                        //Console.WriteLine(dir);
+                    }
 
                     long newScore = GetScoreBetweenTiles(path.Last(), next, dir, out var newDir) + 1;
 
@@ -91,7 +93,7 @@ internal class Day16 : Day
 
                     scoreAtTile[next] = newScore + score;
 
-                    if (next == end)
+                    if (next == ending)
                     {
                         if (newScore + score <= lowestScore)
                         {
@@ -102,81 +104,36 @@ internal class Day16 : Day
                         continue;
                     }
 
-                    Action action = () => Path(next, newPath, newDir, newScore + score, useAllTiles);
+                    Action action = () => Path(next, newPath, newDir, newScore + score, shuffle, ending);
+                    //Path(next, newPath, newDir, newScore + score, shuffle, ending);
                     actions1.Add(action);
-                    //if (newScore < 1000)
-                    //{
-                    //    actions1.Insert(0, action);
-                    //}
-                    //else if (newScore < 2000)
-                    //{
-                    //    actions2.Push(action);
-                    //}
-                    //else
-                    //{
-                    //    actions3.Push(action);
-                    //}
                 }
             }
         }
 
-        void Draw()
+        void DoPath(Vector2 pos, List<Vector2> soFar, Vector2 dir, long score, Vector2 ending)
         {
-            Console.Clear();
-            for (int y = 0; y < lines.Length; y++)
+            for (int i = 0; i < 2; i++)
             {
-                string line = "";
-                for (int x = 0; x < lines[y].Length; x++)
+                for (int y = 0; y < 4; y++)
                 {
-                    if (walls.Contains(new(x, y))) line += "#";
-                    else if (start == new Vector2(x, y)) line += "S";
-                    else if (end == new Vector2(x, y)) line += "E";
-                    else if (bestPathTiles.Contains(new Vector2(x, y))) line += "O";
-                    //else if (allTiles.Contains(new(x, y))) line += "X";
-                    else line += " ";
+                    scoreAtTile.Clear();
+                    Path(pos, soFar, dir, score, y, ending);
+
+                    while (actions1.Count > 0)
+                    {
+                        var todo = actions1.First();
+                        actions1.RemoveAt(0);
+                        todo.Invoke();
+                    }
                 }
-                Console.WriteLine(line);
+                dirs.Reverse();
             }
-            Console.ReadLine();
+
         }
 
-        Path(start, [start], new Vector2(1, 0), 0, true);
-
-        while (actions1.Count > 0 ||  actions2.Count > 0 || actions3.Count > 0)
-        {
-            while (actions1.Count > 0)
-            {
-                var todo = actions1.First();
-                actions1.RemoveAt(0);
-                todo.Invoke();
-            }
-
-            while (actions2.Count > 0)
-            {
-                var todo = actions2.Pop();
-                todo.Invoke();
-                if (actions1.Count > 0) break;
-            }
-
-            while (actions3.Count > 0)
-            {
-                var todo = actions3.Pop();
-                todo.Invoke();
-                if (actions1.Count > 0 || actions2.Count > 0) break;
-            }
-        }
-
-        //Console.WriteLine($"First pathing finished in {Time.Elapsed} with lowest = {lowestScore}");
-        //Path(start, [start], new Vector2(1, 0), 0, false);
-
-        //while (actions1.Count > 0)
-        //{
-        //    var sorted = actions1.Where(x => x.Item1 < lowestScore).OrderBy(x => x.Item1).ToList();
-        //    if (sorted.Count == 0) break;
-        //    var todo = sorted.First().Item2;
-        //    actions1 = sorted.Skip(1).ToList();
-        //    todo.Invoke();
-        //}
+        DoPath(start, [start], new Vector2(1, 0), 0, end);
+        DoPath(end, [end], new Vector2(1, 0), 0, start);
 
         long GetScoreBetweenTiles(Vector2 current, Vector2 next, Vector2 dir, out Vector2 newDir)
         {
@@ -212,13 +169,8 @@ internal class Day16 : Day
             return score;
         }
 
-
-        bestPathTiles = bestPaths.Where(x => GetScore(x, new(1, 0)) == lowestScore).SelectMany(x => x).Distinct().ToList();
-        Draw();
-
-        //totals[0] = finalPaths.Select(x => GetScore(x, new (1, 0))).Order().First();
         totals[0] = lowestScore;
-        totals[1] = bestPathTiles.Count();
+        totals[1] = bestPaths.Where(x => GetScore(x, new(1, 0)) == lowestScore).SelectMany(x => x).Distinct().Count();
         Console.WriteLine($"\nTotal moves: {totalMoves}");
     }
 }
