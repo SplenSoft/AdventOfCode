@@ -13,94 +13,79 @@ namespace AdventOfCode._2024;
 [Day(2024, 17)]
 internal class Day17 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         string[] lines = input.Split(Environment.NewLine);
-        
-        //for (int i = 0; i < 3; i++)
-        //{
-        //    Regex regex = new(@"Register\s(\w):\s(\d+)");
-        //    var g = regex.Match(lines[i]).Groups;
-        //    registers[g[1].Value[0]] = long.Parse(g[2].Value);
-        //}
-        List<long> masterProgram = lines[4][9..].Split(',').Select(long.Parse).ToList();
-        string programString = string.Join(',', masterProgram);
-        long p = Environment.ProcessorCount;
+        long part1Target = long.Parse(lines[0][12..]);
+        List<long> prog = lines[4][9..].Split(',').Select(long.Parse).ToList();
+        string programString = string.Join(',', prog);      
+        int p = Environment.ProcessorCount;
+        List<long>[] outs = new List<long>[p];
+        Dictionary<char, long>[] reg = new Dictionary<char, long>[p];
+        for (int i = 0; i < p; i++) outs[i] = [];
         long per = 100000;
         long iter = 0;
         totals[1] = long.MaxValue;
         bool found = false;
+        bool found2 = false;
         object locker = new();
-        while (!found)
+        List<Action> tasks = [];
+        while (!found || !found2)
         {
-            List<Action> tasks = new List<Action>();
-
+            tasks.Clear();
             for (int j = 0; j < p; j++)
             {
-                long start = iter * j * per;
-                var program = masterProgram.ToList();
+                long start = iter + (j * per);
+                int k = j;
+                long end = start + per;
                 tasks.Add(() =>
                 {
-                    for (long q = start; q < start + per; q++)
+                    for (long q = start; q < end; q++)
                     {
-                        List<long> output = [];
-                        Dictionary<char, long> registers = new() { { 'A', q }, { 'B', 0 }, { 'C', 0 } };
-                        long GetComboOperand(long operand) => operand switch
+                        outs[k].Clear();
+                        foreach (var item in reg[k].Keys)
+                            reg[k][item] = item == 'A' ? q : 0;
+
+                        long Combo(long operand) => operand switch
                         {
-                            4 => registers['A'],
-                            5 => registers['B'],
-                            6 => registers['C'],
+                            4 => reg[k]['A'],
+                            5 => reg[k]['B'],
+                            6 => reg[k]['C'],
                             _ => operand,
                         };
-                        for (int i = 0; i < program.Count;)
+                        long GetAdv(long op) => (long)Math.Floor(reg[k]['A'] / Math.Pow(2, Combo(op)));
+                        for (int i = 0; i < prog.Count;)
                         {
-                            int opcode = (int)program[i];
-                            if (opcode == 0)
+                            int oc = (int)prog[i];
+                            if (oc == 0) reg[k]['A'] = GetAdv(prog[i + 1]);
+                            else if (oc == 1) reg[k]['B'] ^= prog[i + 1];
+                            else if (oc == 2)
+                                reg[k]['B'] = Combo(prog[i + 1]) % 8;
+                            else if (oc == 3 && reg[k]['A'] != 0)
                             {
-                                registers['A'] = (long)Math.Floor(registers['A'] / Math.Pow(2, GetComboOperand(program[i + 1])));
+                                i = (int)prog[i + 1];
+                                continue;
                             }
-                            else if (opcode == 1)
-                            {
-                                registers['B'] ^= program[i + 1];
-                            }
-                            else if (opcode == 2)
-                            {
-                                registers['B'] = GetComboOperand(program[i + 1]) % 8;
-                            }
-                            else if (opcode == 3)
-                            {
-                                if (registers['A'] != 0)
-                                {
-                                    i = (int)program[i + 1];
-                                    continue;
-                                }
-                            }
-                            else if (opcode == 4)
-                            {
-                                registers['B'] ^= registers['C'];
-                            }
-                            else if (opcode == 5)
-                            {
-                                output.Add(GetComboOperand(program[i + 1]) % 8);
-                            }
-                            else if (opcode == 6)
-                            {
-                                registers['B'] = (long)Math.Floor(registers['A'] / Math.Pow(2, GetComboOperand(program[i + 1])));
-                            }
-                            else if (opcode == 7)
-                            {
-                                registers['C'] = (long)Math.Floor(registers['A'] / Math.Pow(2, GetComboOperand(program[i + 1])));
-                            }
+                            else if (oc == 4) reg[k]['B'] ^= reg[k]['C'];
+                            else if (oc == 5) 
+                                outs[k].Add(Combo(prog[i + 1]) % 8);
+                            else if (oc == 6) reg[k]['B'] = GetAdv(prog[i + 1]);
+                            else if (oc == 7) reg[k]['C'] = GetAdv(prog[i + 1]);
                             i += 2;
                         }
 
-                        if (string.Join(',', output) == programString)
+                        string output = string.Join(',', outs[k]);
+                        if (q == part1Target)
+                        {
+                            found2 = true;
+                            totals[0] = output;
+                        }
+
+                        if (output == programString)
                         {
                             found = true;
                             lock (locker)
-                            {
                                 totals[1] = Math.Min(q, totals[1]);
-                            } 
                         }
                     }
                     
@@ -108,8 +93,8 @@ internal class Day17 : Day
             }
 
             Parallel.Invoke(tasks.ToArray());
-            iter++;
-            Console.Write($"\r{iter * per}");
+            iter += p * per;
+            Console.Write($"\r{iter}");
         }
 
         //Console.WriteLine('\n' + string.Join(',', output)); 
