@@ -6,7 +6,7 @@
 [Day(2024, 11)]
 internal class Day11 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         int part = 0;
         foreach (int max in new List<int> { 25, 75 })

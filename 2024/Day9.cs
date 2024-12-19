@@ -8,7 +8,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 9)]
 internal class Day9 : Day
 {
-    public override async Task Solve(string input, long[] tot)
+    public override async Task Solve(string input, dynamic[] tot)
     {
         int p = 0; // Part 1 or part 2, increments at end
         Start:

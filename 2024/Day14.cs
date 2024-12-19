@@ -9,7 +9,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 14)]
 internal class Day14 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         int w /*width of map*/ = 101, h /*height of map*/ = 103;
         var regex = new Regex(@"p=(\d+),(\d+)\sv=(-?\d+),(-?\d+)");

@@ -12,7 +12,7 @@ internal class Day1 : Day
     /// A string consisting of multiple lines of two side-by-side 
     /// numbers, separated by three spaces
     /// </param>
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         var regex = new Regex(@"(\d{5})\s{3}(\d{5})(?:\n|\r\n|$)");
         List<List<int>> lists = [[], []];

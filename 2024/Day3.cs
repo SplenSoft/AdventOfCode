@@ -8,7 +8,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 3)]
 internal class Day3 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         var regex = new Regex(@"mul\((\d{1,3}),(\d{1,3})\)");
 

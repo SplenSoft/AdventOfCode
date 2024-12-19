@@ -9,7 +9,7 @@ namespace AdventOfCode._2015;
 [Day(2015, 4)]
 internal class Day4 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         int j = 0;
         List<List<long>> numbers = [[], []];

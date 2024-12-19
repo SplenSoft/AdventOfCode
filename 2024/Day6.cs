@@ -9,7 +9,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 6)]
 internal class Day6 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         List<List<Vector2>> vecs = [[/*path*/], [/*obstacles*/], [/*count*/]]; 
         Dictionary<char, Vector2> dirs = new()

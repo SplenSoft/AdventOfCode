@@ -9,7 +9,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 16)]
 internal class Day16 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         string[] lines = input.Split(Environment.NewLine);
         totals[0] = long.MaxValue; // Best path must be a lower score than this

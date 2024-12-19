@@ -8,7 +8,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 15)]
 internal class Day15 : Day
 {   
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         int p = 0;
         string[] lines = input.Split(Environment.NewLine);

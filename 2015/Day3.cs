@@ -8,7 +8,7 @@ namespace AdventOfCode._2015;
 [Day(2015, 3)]
 internal class Day3 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         Dictionary<float, List<float>> houses;
         Vector2[] santas = new Vector2[2];

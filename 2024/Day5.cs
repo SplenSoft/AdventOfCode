@@ -8,7 +8,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 5)]
 internal class Day5 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         string[] n = input.Split(Environment.NewLine);
         var r = n.Where(x => x.Contains('|')).Select(x => x.Split('|'));

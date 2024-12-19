@@ -9,7 +9,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 13)]
 internal class Day13 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         string[] lines = input.Split(Environment.NewLine)
             .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();

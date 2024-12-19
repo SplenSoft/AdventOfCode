@@ -8,7 +8,7 @@ namespace AdventOfCode._2024;
 [Day(2024, 12)]
 internal class Day12 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         string[] lines = input.Split(Environment.NewLine);
         List<Vector2> usedPlots = [];

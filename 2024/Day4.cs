@@ -15,7 +15,7 @@ internal class Day4 : Day
     /// <para />
     /// Part 2: Handle X-Mas by validating 3x3 sections of the input grid
     /// </summary>
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         int Count(string s, string v) => new Regex(v).Matches(s).Count;
         bool Valid(string s) => s is "SM" or "MS";
