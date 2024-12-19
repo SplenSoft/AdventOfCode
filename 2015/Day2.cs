@@ -8,7 +8,7 @@ namespace AdventOfCode._2015;
 [Day(2015, 2)]
 internal class Day2 : Day
 {
-    public override async Task Solve(string input, long[] totals)
+    public override async Task Solve(string input, dynamic[] totals)
     {
         var regex = new Regex(@"(\d+?)x(\d+?)x(\d+?)(?:\n|\r\n|$)");
         List<(int, int, int)> list = [];

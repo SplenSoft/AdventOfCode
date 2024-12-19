@@ -83,7 +83,7 @@ while (dayNumber == null)
 
 Console.WriteLine($"Solving Advent of Code year {year}, day {dayNumber + 1}");
 Day day = days[(int)year][(int)dayNumber];
-long[] totals = [0, 0];
+dynamic[] totals = [0L, 0L];
 bool? isTest = null;
 while (isTest == null)
 {
