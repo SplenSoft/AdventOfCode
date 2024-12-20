@@ -95,6 +95,7 @@ while (isTest == null)
         Console.WriteLine("Invalid response");
     }
 }
+Settings.IsTest = (bool)isTest;
 Time.Start();
 await day.Solve(isTest == true ? Resources.TestInput : Resources.Input, totals);
 Time.Stop();
