@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-namespace AdventOfCode._2024;
+﻿namespace AdventOfCode._2024;
 
 /// <summary>
 /// <see href="https://adventofcode.com/2024/day/17"/>
@@ -16,87 +9,69 @@ internal class Day17 : Day
     public override async Task Solve(string input, dynamic[] totals)
     {
         string[] lines = input.Split(Environment.NewLine);
-        long part1Target = long.Parse(lines[0][12..]);
-        List<long> prog = lines[4][9..].Split(',').Select(long.Parse).ToList();
-        string programString = string.Join(',', prog);      
-        int p = Environment.ProcessorCount;
-        List<long>[] outs = new List<long>[p];
-        Dictionary<char, long>[] reg = new Dictionary<char, long>[p];
-        for (int i = 0; i < p; i++) outs[i] = [];
-        long per = 100000;
-        long iter = 0;
-        totals[1] = long.MaxValue;
-        bool found = false;
-        bool found2 = false;
-        object locker = new();
-        List<Action> tasks = [];
-        while (!found || !found2)
+        ulong part1A = ulong.Parse(lines[0][12..]);
+        var prog1 = lines[4][9..].Split(',').Select(ulong.Parse).ToList();
+        // Part 1, run the program with our input A register
+        List<ulong> Run(ulong a /*Register A*/, List<ulong> prog)
         {
-            tasks.Clear();
-            for (int j = 0; j < p; j++)
+            List<ulong> outs = [];
+            ulong b = 0; // Register B
+            ulong c = 0; // Register C
+
+            ulong Combo(ulong operand) => operand switch
             {
-                long start = iter + (j * per);
-                int k = j;
-                long end = start + per;
-                tasks.Add(() =>
+                4 => a,
+                5 => b,
+                6 => c,
+                _ => operand,
+            };
+
+            ulong GetAdv(ulong op) => 
+                (ulong)Math.Floor(a / Math.Pow(2, Combo(op)));
+
+            for (int i = 0; i < prog.Count;)
+            {
+                int oc = (int)prog[i];
+                if (oc == 0) a = GetAdv(prog[i + 1]);
+                else if (oc == 1) b ^= prog[i + 1];
+                else if (oc == 2) b = Combo(prog[i + 1]) % 8;
+                else if (oc == 3 && a != 0)
                 {
-                    for (long q = start; q < end; q++)
-                    {
-                        outs[k].Clear();
-                        foreach (var item in reg[k].Keys)
-                            reg[k][item] = item == 'A' ? q : 0;
-
-                        long Combo(long operand) => operand switch
-                        {
-                            4 => reg[k]['A'],
-                            5 => reg[k]['B'],
-                            6 => reg[k]['C'],
-                            _ => operand,
-                        };
-                        long GetAdv(long op) => (long)Math.Floor(reg[k]['A'] / Math.Pow(2, Combo(op)));
-                        for (int i = 0; i < prog.Count;)
-                        {
-                            int oc = (int)prog[i];
-                            if (oc == 0) reg[k]['A'] = GetAdv(prog[i + 1]);
-                            else if (oc == 1) reg[k]['B'] ^= prog[i + 1];
-                            else if (oc == 2)
-                                reg[k]['B'] = Combo(prog[i + 1]) % 8;
-                            else if (oc == 3 && reg[k]['A'] != 0)
-                            {
-                                i = (int)prog[i + 1];
-                                continue;
-                            }
-                            else if (oc == 4) reg[k]['B'] ^= reg[k]['C'];
-                            else if (oc == 5) 
-                                outs[k].Add(Combo(prog[i + 1]) % 8);
-                            else if (oc == 6) reg[k]['B'] = GetAdv(prog[i + 1]);
-                            else if (oc == 7) reg[k]['C'] = GetAdv(prog[i + 1]);
-                            i += 2;
-                        }
-
-                        string output = string.Join(',', outs[k]);
-                        if (q == part1Target)
-                        {
-                            found2 = true;
-                            totals[0] = output;
-                        }
-
-                        if (output == programString)
-                        {
-                            found = true;
-                            lock (locker)
-                                totals[1] = Math.Min(q, totals[1]);
-                        }
-                    }
-                    
-                });
+                    i = (int)prog[i + 1];
+                    continue;
+                }
+                else if (oc == 4) b ^= c;
+                else if (oc == 5) outs.Add(Combo(prog[i + 1]) % 8); // 3 bits!
+                else if (oc == 6) b = GetAdv(prog[i + 1]);
+                else if (oc == 7) c = GetAdv(prog[i + 1]);
+                i += 2;
             }
 
-            Parallel.Invoke(tasks.ToArray());
-            iter += p * per;
-            Console.Write($"\r{iter}");
+            return outs;
+        }
+        
+        var part1 = Run(part1A, prog1);
+        totals[0] = string.Join(',', part1);
+
+        // Part 2, reverse engineering by finding the bits we took out
+        List<ulong> validValsA = [0]; // Start with nothing, slowly add bits
+        var reversed = prog1.ToArray().Reverse().ToList();
+        for (int i = 0; i < reversed.Count; i++)
+        {
+            int oc = (int)prog1[i];
+            List<ulong> newAs = [];
+            foreach (var a in validValsA)
+                for (uint j = 0; j < 8; j++) // 8 == 3 bits
+                {   // Find valid bit replacements and build 'A' Registers
+                    ulong newA = a << 3; // Bitshift 3 to make room for bits
+                    newA += j; // Add bits to the larger number
+                    var res = Run(newA, prog1); // Run through program
+                    if (res[0] == reversed[i]) newAs.Add(newA); // Save valid
+                }
+
+            validValsA = newAs.ToList();
         }
 
-        //Console.WriteLine('\n' + string.Join(',', output)); 
+        totals[1] = validValsA.Order().First(); // Take the lowest A register
     }
 }
