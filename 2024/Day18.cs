@@ -33,50 +33,72 @@ internal class Day18 : Day
         Dictionary<Vector2, int> tileScore = [];
         double Angle(Vector2 v, Vector2 u) => Math.Acos(Vector2.Dot(v, u)
             / (v.Length() * u.Length()));
-
         IEnumerable<Vector2> GetDirs(Vector2 pos) => dirs.OrderBy(x => Math.Abs(Angle(exit - pos, x - pos)));
 
-        long lowest = long.MaxValue;
+        Dictionary<Vector2, IEnumerable<Vector2>> cachedDirs = [];
+
+        for (int x = 0; x <= dims; x++)
+            for (int y = 0; y <= dims; y++)
+                cachedDirs[new(x, y)] = GetDirs(new(x, y));
+
+        long lowest = 322;
+        object lockObj = new object();
         HashSet<Vector2> used = [];
         long running = 0;
+        running++;
         Path(new(0, 0), [new(0, 0)]);
-        
         
         void Path(Vector2 pos, HashSet<Vector2> path)
         {
-            running++;
-            if (running % 1000000 == 0)
-            {
-                Draw();
-            }
-            used.Add(pos);
+            //used.Add(pos);
             if (pos == exit)
             {
                 paths.Add(path);
-                if (path.Count - 1 < lowest)
-                {
-                    lowest = path.Count - 1;
-                    //Console.Write($"\rLowest: {lowest}                                           ");
-                }
+                lock (lockObj)
+                    if (path.Count - 1 < lowest)
+                    {
+                        lowest = path.Count - 1;
+                        //Console.Write($"\rLowest: {lowest}                                           ");
+                    }
+                Interlocked.Decrement(ref running);
                 return;
             }
 
-            if (path.Count - 1 >= lowest) return;
+            if (path.Count - 1 >= lowest)
+            {
+                Interlocked.Decrement(ref running);
+                return;
+            }
 
-            if (!tileScore.TryGetValue(pos, out var score))
-                score = int.MaxValue;
+            //if (!tileScore.TryGetValue(pos, out var score))
+            //{
+            //    tileScore[pos] = path.Count;
+            //}
 
-            if (path.Count > score) return;
-            tileScore[pos] = path.Count;
+            //score = int.MaxValue;
 
-            foreach (var dir in GetDirs(pos))
+            //if (path.Count > score)
+            //{
+            //    Interlocked.Decrement(ref running);
+            //    return;
+            //}
+            
+            foreach (var dir in cachedDirs[pos])
             {
                 Vector2 next = pos + dir;
                 if (next.X < 0 || next.Y < 0 || next.X > dims || next.Y > dims) continue; // Stay on map
                 if (bytes.Contains(next)) continue;
                 if (path.Contains(next)) continue;
-                Path(next, [.. path, next]);
+                Interlocked.Increment(ref running);
+                Task.Run(() => Path(next, [.. path, next]));
             }
+            Interlocked.Decrement(ref running);
+        }
+
+        while (running > 0)
+        {
+            await Task.Yield();
+            Console.Write($"\rLowest: {lowest}. Running: {running}                                     ");
         }
 
         void Draw()
