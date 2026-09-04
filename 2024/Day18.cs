@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -41,7 +42,8 @@ internal class Day18 : Day
             for (int y = 0; y <= dims; y++)
                 cachedDirs[new(x, y)] = GetDirs(new(x, y));
 
-        long lowest = 322;
+        long lowest = 320;
+        object lockObj2 = new object();
         object lockObj = new object();
         HashSet<Vector2> used = [];
         long running = 0;
@@ -70,27 +72,32 @@ internal class Day18 : Day
                 return;
             }
 
-            //if (!tileScore.TryGetValue(pos, out var score))
-            //{
-            //    tileScore[pos] = path.Count;
-            //}
+            lock (lockObj2)
+            {
+                if (!tileScore.TryGetValue(pos, out var score))
+                {
+                    tileScore[pos] = path.Count;
+                }
+                else
+                {
+                    if (path.Count >= score)
+                    {
+                        Interlocked.Decrement(ref running);
+                        return;
+                    }
+                }
+            }
 
-            //score = int.MaxValue;
-
-            //if (path.Count > score)
-            //{
-            //    Interlocked.Decrement(ref running);
-            //    return;
-            //}
-            
             foreach (var dir in cachedDirs[pos])
             {
                 Vector2 next = pos + dir;
                 if (next.X < 0 || next.Y < 0 || next.X > dims || next.Y > dims) continue; // Stay on map
                 if (bytes.Contains(next)) continue;
                 if (path.Contains(next)) continue;
+                path.Add(next);
+                HashSet<Vector2> newPath = [.. path];
                 Interlocked.Increment(ref running);
-                Task.Run(() => Path(next, [.. path, next]));
+                Task.Run(() => Path(next, newPath));
             }
             Interlocked.Decrement(ref running);
         }
@@ -118,6 +125,6 @@ internal class Day18 : Day
             Console.ReadLine();
         }
 
-        totals[0] = lowest;
+        totals[0] = paths.OrderBy(x => x.Distinct().Count()).First().Distinct().Count() - 2;
     }
 }
